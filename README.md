@@ -9,6 +9,6 @@ I was able to run onnxruntime on anaconda environment. It wasnt successful due t
 
 The best way to try this out is using a ubuntu environment. 
 
-pip install dash
+pip install dash<br>
 pip install onnxruntime 
 
