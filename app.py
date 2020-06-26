@@ -155,7 +155,6 @@ def parse_contents(contents, filename, date):
     #data:image/png;base64,
     print("BUfffffffffffffffffffffffffffffffffffffffffffererer")
     #print(new_image_string)
-    print("555Endeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
     #print(myimage)
     #sd = ""
     #sd = base64.b64encode(myimage)
