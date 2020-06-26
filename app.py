@@ -153,7 +153,7 @@ def parse_contents(contents, filename, date):
     new_image_string = base64.b64encode(buff.getvalue()).decode("utf-8")
     new_image_string = "data:image/JPEG;base64,"+new_image_string
     #data:image/png;base64,
-    print("BUfffffffffffffffffffffffffffffffffffffffffffererer")
+    print("BUffffffffffffffffffffffffffffffffffffffffffererer")
     #print(new_image_string)
     #print(myimage)
     #sd = ""
