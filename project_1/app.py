@@ -41,11 +41,14 @@ app.layout = html.Div([
 
 
 def parse_contents(contents, filename, date):
-
+    print()
+    print("hello")
     print(contents)
+    print()
     content_type, content_string = contents.split(',')
 
-    sess = rt.InferenceSession("dishan_segnet_v2.onnx")
+    #sess = rt.InferenceSession("dishan_segnet_v2.onnx")
+    sess = rt.InferenceSession("dishan_made_unet_model.onnx")
     print("****************************************")
     # encode frame 
     #encoded_string = base64.b64encode(contents.read())
@@ -69,7 +72,7 @@ def parse_contents(contents, filename, date):
     print(pix)
 
     np_img = np.array(im)
-    size = 256
+    size = 512
     print("np_img.shape",np_img.shape)
     np_reshape = np.reshape(im,(1, 3, size,size))
     floatAstype = np.float32(np_reshape)
@@ -79,7 +82,11 @@ def parse_contents(contents, filename, date):
     # Run the model
     pred_onx = sess.run("",{input_name:floatAstype})
 
-    print(pred_onx)
+    #print(pred_onx)
+    print("$$$$$$$$$$$$$$$$$$$$$$$$$")
+    #print(pred_onx[0][0][0][0][0])
+    #print(pred_onx[0][0][1][0][0])
+    #print(pred_onx[0][0][2][0][0])
 
 
     # size is 256
@@ -97,7 +104,7 @@ def parse_contents(contents, filename, date):
         for y in range(height):
             index = 0
             max_prediction = 0
-            for i in range(0,4):
+            for i in range(0,3):
                 pred = pred_onx[0][0][i][x][y]
                 if pred > max_prediction:
                     index = i
@@ -117,32 +124,43 @@ def parse_contents(contents, filename, date):
             # Bed_per    =  0.0028907223837762435
         
             if max_prediction > 0.3573605344575649:
-                image_construced[x][y] = 1
+                image_construced[x][y] = 16448250  # 1
                 label_holder = "canopy"
             elif max_prediction >  0.3228344583030248:
-                image_construced[x][y] = 2
+                image_construced[x][y] = 50000 # 2
                 label_holder = "soil"
             elif max_prediction >  0.31691428485563417:
-                image_construced[x][y] = 3
-                label_holder = "stubble"
+                image_construced[x][y] = 6000   # 3
+                label_holder = "stubble" 
             else:
-                image_construced[x][y] = 4
+                image_construced[x][y] = 0   # 4
                 label_holder = "None"
 
-    print(max_probability_holder[0][0])
-    print(max_probability_holder[0][1])
-    print(max_probability_holder[0][2])
+    #print(max_probability_holder[0][0])
+    #print(max_probability_holder[0][1])
+    #print(max_probability_holder[0][2])
     
-    imgloo = Image.fromarray(image_construced, 'RGB')                  #Crée une image à partir de la matrice
-    buffer = BytesIO()
-    imgloo.save(buffer,format="JPEG")                  #Enregistre l'image dans le buffer
-    myimage = buffer.getvalue() 
+    #imgloo = Image.fromarray(image_construced)                  #Crée une image à partir de la matrice
+    #buffer = BytesIO()
+    #imgloo.save(buffer,format="JPEG")                  #Enregistre l'image dans le buffer
+    #myimage = buffer.getvalue() 
+    #image_construced = image_construced.astype(np.uint8)
+    pil_img = Image.fromarray(image_construced)
+    if pil_img.mode != 'RGB':
+       pil_img = pil_img.convert('RGB')
+    buff = BytesIO()
+    pil_img.save(buff, format="JPEG")
+    new_image_string = base64.b64encode(buff.getvalue()).decode("utf-8")
+    new_image_string = "data:image/JPEG;base64,"+new_image_string
+    #data:image/png;base64,
     print("BUfffffffffffffffffffffffffffffffffffffffffffererer")
+    #print(new_image_string)
+    print("555Endeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
     #print(myimage)
-    sd = ""
-    sd = base64.b64encode(myimage)
-    srtt = "data:image/jpeg;base64,"+sd.decode('utf-8')
-    print(srtt)
+    #sd = ""
+    #sd = base64.b64encode(myimage)
+    #srtt = "data:image/jpeg;base64,"+sd.decode('utf-8')
+    #print(srtt)
     print("here") ;    
     return html.Div([
         html.H5(filename),
@@ -158,10 +176,13 @@ def parse_contents(contents, filename, date):
             'wordBreak': 'break-all'
         }),
         
-        html.Img(src=srtt),
+        html.H5("Constructed Image"),
+        #html.H6(datetime.datetime.fromtimestamp(date)),
+
+        html.Img(src=new_image_string),
         html.Hr(),
         html.Div('Raw Content'),
-        html.Pre(srtt[0:200] + '...', style={
+        html.Pre(new_image_string[0:200] + '...', style={
             'whiteSpace': 'pre-wrap',
             'wordBreak': 'break-all'
         })
