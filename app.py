@@ -41,65 +41,34 @@ app.layout = html.Div([
 
 
 def parse_contents(contents, filename, date):
-    print()
-    print("hello")
-    print(contents)
-    print()
+
+
+    # Decoding string base64 into an image
     content_type, content_string = contents.split(',')
-
-    #sess = rt.InferenceSession("dishan_segnet_v2.onnx")
-    sess = rt.InferenceSession("dishan_made_unet_model.onnx")
-    print("****************************************")
-    # encode frame 
-    #encoded_string = base64.b64encode(contents.read())
-    # decode frame
-    #decoded_string = base64.b64decode(encoded_string)
-    #decoded_img = np.fromstring(decoded_string, dtype=np.uint8)
-    #decoded_img = decoded_img.reshape(contents.shape)
-    decoded = base64.b64decode(content_string)
-    #print(decoded)
-
-    #im1 = Image.open(decoded)
-    #print(im1)
     im = Image.open(BytesIO(base64.b64decode(content_string)))
 
-    print(im)
-
-
-    
-    pix = im.load()
-    print("******pix**********************************")
-    print(pix)
-
+    # Resize of image and proper datatype
     np_img = np.array(im)
     size = 512
-    print("np_img.shape",np_img.shape)
-    np_reshape = np.reshape(im,(1, 3, size,size))
+    np_reshape = np.reshape(im,(1, 3, size, size))
     floatAstype = np.float32(np_reshape)
+
+    # ONNX runtime
+    sess = rt.InferenceSession("dishan_made_unet_model.onnx")
     input_name = sess.get_inputs()[0].name
     output_name = sess.get_outputs()[-1].name
-
-    # Run the model
     pred_onx = sess.run("",{input_name:floatAstype})
 
-    #print(pred_onx)
-    print("$$$$$$$$$$$$$$$$$$$$$$$$$")
-    #print(pred_onx[0][0][0][0][0])
-    #print(pred_onx[0][0][1][0][0])
-    #print(pred_onx[0][0][2][0][0])
-
-
     # size is 256
-    width = size
-    height = size
+x
 
 
     # Creating the array 
-
-    image_construced = np.empty(shape=[width, height])
-    max_probability_holder = np.empty(shape=[width, height])
-    label_holder = np.empty(shape=[width, height])
-
+    rgb_array = np.zeros((size,size,3), 'uint8')
+    #red = rgb_array[:,:,0]
+    #green = rgb_array[:,:,1]
+    #blue = rgb_array[:,:,2]
+    # 1*1*3*512*512
     for x in range(width):
         for y in range(height):
             index = 0
@@ -110,57 +79,43 @@ def parse_contents(contents, filename, date):
                     index = i
                     max_prediction = pred
             
-            
-            max_probability_holder[x][y] = max_prediction
-            
-            # ignore the rest of the max_prediction prediction portion
-            
-            # End of for loop for each row of 4 softmax probabilities
-            # Then we check with weights to see which catogory its in 
-            
-            # Blue_per   =   0.3573605344575649
-            # Pink_per   =   0.3228344583030248
-            # Yellow_per =   0.31691428485563417
-            # Bed_per    =  0.0028907223837762435
-        
-            if max_prediction > 0.3573605344575649:
-                image_construced[x][y] = 16448250  # 1
-                label_holder = "canopy"
-            elif max_prediction >  0.3228344583030248:
-                image_construced[x][y] = 50000 # 2
-                label_holder = "soil"
-            elif max_prediction >  0.31691428485563417:
-                image_construced[x][y] = 6000   # 3
-                label_holder = "stubble" 
-            else:
-                image_construced[x][y] = 0   # 4
-                label_holder = "None"
 
-    #print(max_probability_holder[0][0])
-    #print(max_probability_holder[0][1])
-    #print(max_probability_holder[0][2])
-    
-    #imgloo = Image.fromarray(image_construced)                  #Crée une image à partir de la matrice
-    #buffer = BytesIO()
-    #imgloo.save(buffer,format="JPEG")                  #Enregistre l'image dans le buffer
-    #myimage = buffer.getvalue() 
-    #image_construced = image_construced.astype(np.uint8)
-    pil_img = Image.fromarray(image_construced)
-    if pil_img.mode != 'RGB':
-       pil_img = pil_img.convert('RGB')
+            if index == 0:
+
+                label_holder = "canopy"
+                rgb_array[x,y,0] = 0
+                rgb_array[x,y,1] = 255
+                rgb_array[x,y,2] = 0
+
+            elif index == 1:
+
+                label_holder = "soil"
+                rgb_array[x,y,0] = 165
+                rgb_array[x,y,1] = 42
+                rgb_array[x,y,2] = 42
+
+            elif index == 2:
+
+                label_holder = "stubble" 
+                rgb_array[x,y,0] = 0
+                rgb_array[x,y,1] = 0
+                rgb_array[x,y,2] = 255
+            else:
+ 
+                label_holder = "None"
+                rgb_array[x,y,0] = 255
+                rgb_array[x,y,1] = 0
+                rgb_array[x,y,2] = 0
+
+
+
+
+    pil_img = Image.fromarray(rgb_array)
     buff = BytesIO()
     pil_img.save(buff, format="JPEG")
     new_image_string = base64.b64encode(buff.getvalue()).decode("utf-8")
     new_image_string = "data:image/JPEG;base64,"+new_image_string
-    #data:image/png;base64,
-    print("BUffffffffffffffffffffffffffffffffffffffffffererer")
-    #print(new_image_string)
-    #print(myimage)
-    #sd = ""
-    #sd = base64.b64encode(myimage)
-    #srtt = "data:image/jpeg;base64,"+sd.decode('utf-8')
-    #print(srtt)
-    print("here") ;    
+    
     return html.Div([
         html.H5(filename),
         html.H6(datetime.datetime.fromtimestamp(date)),
