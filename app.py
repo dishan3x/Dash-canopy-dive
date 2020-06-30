@@ -49,14 +49,14 @@ def parse_contents(contents, filename, date):
 
     # Resize of image and proper datatype
     np_img = np.array(im)
-    size = 512
-    #size = 256
+    #size = 512
+    size = 256
     np_reshape = np.reshape(im,(1, 3, size, size))
     floatAstype = np.float32(np_reshape)
 
     # ONNX runtime
-    sess = rt.InferenceSession("dishan_made_unet_model.onnx")
-    #sess = rt.InferenceSession("dishan_segnet_v2.onnx")
+    #sess = rt.InferenceSession("dishan_made_unet_model.onnx")
+    sess = rt.InferenceSession("dishan_segnet_v2.onnx")
     input_name = sess.get_inputs()[0].name
     output_name = sess.get_outputs()[-1].name
     pred_onx = sess.run("",{input_name:floatAstype})
