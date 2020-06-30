@@ -50,17 +50,16 @@ def parse_contents(contents, filename, date):
     # Resize of image and proper datatype
     np_img = np.array(im)
     size = 512
+    #size = 256
     np_reshape = np.reshape(im,(1, 3, size, size))
     floatAstype = np.float32(np_reshape)
 
     # ONNX runtime
     sess = rt.InferenceSession("dishan_made_unet_model.onnx")
+    #sess = rt.InferenceSession("dishan_segnet_v2.onnx")
     input_name = sess.get_inputs()[0].name
     output_name = sess.get_outputs()[-1].name
     pred_onx = sess.run("",{input_name:floatAstype})
-
-    # size is 256
-x
 
 
     # Creating the array 
@@ -69,6 +68,8 @@ x
     #green = rgb_array[:,:,1]
     #blue = rgb_array[:,:,2]
     # 1*1*3*512*512
+    width = size
+    height = size
     for x in range(width):
         for y in range(height):
             index = 0
@@ -157,5 +158,5 @@ def update_output(list_of_contents, list_of_names, list_of_dates):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server()
     #app.run_server()
