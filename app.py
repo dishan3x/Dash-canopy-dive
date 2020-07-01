@@ -11,13 +11,40 @@ from PIL import Image
 import base64
 from io import BytesIO,StringIO
 import plotly.express as px
+import dash_bootstrap_components as dbc
 
 
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css','dbc.themes.BOOTSTRAP']
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
+""" navbar = dbc.NavbarSimple(
+    children=[
+        dbc.NavItem(dbc.NavLink("Page 1", href="#")),
+        dbc.DropdownMenu(
+            children=[
+                dbc.DropdownMenuItem("More pages", header=True),
+                dbc.DropdownMenuItem("Page 2", href="#"),
+                dbc.DropdownMenuItem("Page 3", href="#"),
+            ],
+            nav=True,
+            in_navbar=True,
+            label="More",
+        ),
+    ],
+    brand="NavbarSimple",
+    brand_href="#",
+    color="primary",
+    dark=True,
+) """
+
 app.layout = html.Div([
+        html.Div(
+        id="app-header",
+        children=[
+            html.Div('Plotly Dash', className="app-header--title")
+        ]
+    ),
     dcc.Upload(
         id='upload-image',
         children=html.Div([
@@ -25,14 +52,14 @@ app.layout = html.Div([
             html.A('Select Files')
         ]),
         style={
-            'width': '100%',
+            'width': '50%',
             'height': '60px',
             'lineHeight': '60px',
             'borderWidth': '1px',
             'borderStyle': 'dashed',
             'borderRadius': '5px',
             'textAlign': 'center',
-            'margin': '10px'
+            'margin': '10px',
         },
         # Allow multiple files to be uploaded
         multiple=True
@@ -50,14 +77,14 @@ def parse_contents(contents, filename, date):
 
     # Resize of image and proper datatype
     np_img = np.array(im)
-    #size = 512
-    size = 256
+    size = 512
+    #size = 256
     np_reshape = np.reshape(im,(1, 3, size, size))
     floatAstype = np.float32(np_reshape)
 
     # ONNX runtime
-    #sess = rt.InferenceSession("dishan_made_unet_model.onnx")
-    sess = rt.InferenceSession("dishan_segnet_v2.onnx")
+    sess = rt.InferenceSession("dishan_made_unet_model.onnx")
+    #sess = rt.InferenceSession("dishan_segnet_v2.onnx")
     input_name = sess.get_inputs()[0].name
     output_name = sess.get_outputs()[-1].name
     pred_onx = sess.run("",{input_name:floatAstype})
@@ -117,29 +144,19 @@ def parse_contents(contents, filename, date):
     px.imshow(rgb_array)
 
     return html.Div([
-        html.H5(filename),
-        html.H6(datetime.datetime.fromtimestamp(date)),
+        #html.H5(filename),
+        #html.H6(datetime.datetime.fromtimestamp(date)),
 
         # HTML images accept base64 encoded strings in the same format
         # that is supplied by the upload
+        html.Div('original image'),
         html.Img(src=contents),
-        html.Hr(),
-        html.Div('Raw Content'),
-        html.Pre(contents[0:200] + '...', style={
-            'whiteSpace': 'pre-wrap',
-            'wordBreak': 'break-all'
-        }),
+
         
         html.H5("Constructed Image"),
         #html.H6(datetime.datetime.fromtimestamp(date)),
-
         html.Img(src=new_image_string),
-        html.Hr(),
-        html.Div('Raw Content'),
-        html.Pre(new_image_string[0:200] + '...', style={
-            'whiteSpace': 'pre-wrap',
-            'wordBreak': 'break-all'
-        })
+  
     ])
 
     
@@ -154,6 +171,9 @@ def update_output(list_of_contents, list_of_names, list_of_dates):
             parse_contents(c, n, d) for c, n, d in
             zip(list_of_contents, list_of_names, list_of_dates)]
         return children
+
+
+
 
 
 if __name__ == '__main__':
