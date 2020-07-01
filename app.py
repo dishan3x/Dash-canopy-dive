@@ -10,6 +10,7 @@ from PIL import Image
 #from skimage import io
 import base64
 from io import BytesIO,StringIO
+import plotly.express as px
 
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -60,49 +61,45 @@ def parse_contents(contents, filename, date):
     pred_onx = sess.run("",{input_name:floatAstype})
 
     # size is 256
-x
-
-
+    
     # Creating the array 
     rgb_array = np.zeros((size,size,3), 'uint8')
     #red = rgb_array[:,:,0]
     #green = rgb_array[:,:,1]
     #blue = rgb_array[:,:,2]
     # 1*1*3*512*512
-    for x in range(width):
-        for y in range(height):
-            index = 0
-            max_prediction = 0
-            for i in range(0,3):
-                pred = pred_onx[0][0][i][x][y]
-                if pred > max_prediction:
-                    index = i
-                    max_prediction = pred
-            
 
+    # Choosing class of the highest index 
+    # highest probability of each pixel cell 
+    highest_index = np.argmax(pred_onx[0][0], axis=0)
+    
+
+    for x in range(size):
+        for y in range(size):
+            index = highest_index[x][y]
             if index == 0:
 
-                label_holder = "canopy"
+                # canopy
                 rgb_array[x,y,0] = 0
                 rgb_array[x,y,1] = 255
                 rgb_array[x,y,2] = 0
 
             elif index == 1:
 
-                label_holder = "soil"
+                # soil
                 rgb_array[x,y,0] = 165
                 rgb_array[x,y,1] = 42
                 rgb_array[x,y,2] = 42
 
             elif index == 2:
 
-                label_holder = "stubble" 
+                #stubble 
                 rgb_array[x,y,0] = 0
                 rgb_array[x,y,1] = 0
                 rgb_array[x,y,2] = 255
             else:
  
-                label_holder = "None"
+                #None
                 rgb_array[x,y,0] = 255
                 rgb_array[x,y,1] = 0
                 rgb_array[x,y,2] = 0
@@ -116,6 +113,9 @@ x
     new_image_string = base64.b64encode(buff.getvalue()).decode("utf-8")
     new_image_string = "data:image/JPEG;base64,"+new_image_string
     
+    # px
+    px.imshow(rgb_array)
+
     return html.Div([
         html.H5(filename),
         html.H6(datetime.datetime.fromtimestamp(date)),
