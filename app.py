@@ -19,27 +19,27 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css','dbc.themes
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 
-""" navbar = dbc.NavbarSimple(
+navbar = dbc.NavbarSimple(
     children=[
-        dbc.NavItem(dbc.NavLink("Page 1", href="#")),
-        dbc.DropdownMenu(
-            children=[
-                dbc.DropdownMenuItem("More pages", header=True),
-                dbc.DropdownMenuItem("Page 2", href="#"),
-                dbc.DropdownMenuItem("Page 3", href="#"),
-            ],
-            nav=True,
-            in_navbar=True,
-            label="More",
+        dbc.title('Hey'),
+        #dbc.NavItem(dbc.NavLink("Page 1", href="#")),
+        #dbc.DropdownMenu(
+        #    children=[
+        #        dbc.DropdownMenuItem("More pages", header=True),
+        #        dbc.DropdownMenuItem("Page 2", href="#"),
+        #        dbc.DropdownMenuItem("Page 3", href="#"),
+        nav=True,
+        in_navbar=True,
+        label="More",
         ),
     ],
     brand="NavbarSimple",
     brand_href="#",
     color="primary",
     dark=True,
-) """
+) 
 
-app.layout = html.Div([
+body = html.Div([
         html.Div(
         id="app-header",
         children=[
@@ -69,6 +69,8 @@ app.layout = html.Div([
 ])
 
 
+app.layout = html.Div([navbar,body])
+
 def parse_contents(contents, filename, date):
 
 
@@ -78,8 +80,8 @@ def parse_contents(contents, filename, date):
 
     # Resize of image and proper datatype
     np_img = np.array(im)
-    size = 512
-    #size = 256
+    #size = 512
+    size = 256
     np_reshape = np.reshape(im,(1, 3, size, size))
     floatAstype = np.float32(np_reshape)
 
@@ -133,8 +135,6 @@ def parse_contents(contents, filename, date):
                 rgb_array[x,y,2] = 0
 
 
-
-
     pil_img = Image.fromarray(rgb_array)
     buff = BytesIO()
     pil_img.save(buff, format="JPEG")
@@ -178,5 +178,5 @@ def update_output(list_of_contents, list_of_names, list_of_dates):
 
 
 if __name__ == '__main__':
-    app.run_server()
+    app.run_server(debug=True)
     #app.run_server()
