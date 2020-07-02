@@ -21,7 +21,7 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 
 navbar = dbc.NavbarSimple(
-    brand="NavbarSimple",
+    brand="Cora",
     color="primary",
     dark=True,
 ) 
