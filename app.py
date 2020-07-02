@@ -26,13 +26,7 @@ navbar = dbc.NavbarSimple(
     dark=True,
 ) 
 
-body = html.Div([
-        html.Div(
-        id="app-header",
-        children=[
-            html.Div('Plotly Dash', className="app-header--title")
-        ]
-    ),
+body =dbc.Container([
     dcc.Upload(
         id='upload-image',
         children=html.Div([
@@ -40,7 +34,7 @@ body = html.Div([
             html.A('Select Files')
         ]),
         style={
-            'width': '50%',
+            'width': '100%',
             'height': '60px',
             'lineHeight': '60px',
             'borderWidth': '1px',
@@ -73,8 +67,8 @@ def parse_contents(contents, filename, date):
     floatAstype = np.float32(np_reshape)
 
     # ONNX runtime
-    sess = rt.InferenceSession("dishan_made_unet_model.onnx")
-    #sess = rt.InferenceSession("dishan_segnet_v2.onnx")
+    #sess = rt.InferenceSession("dishan_made_unet_model.onnx")
+    sess = rt.InferenceSession("dishan_segnet_v2.onnx")
     input_name = sess.get_inputs()[0].name
     output_name = sess.get_outputs()[-1].name
     pred_onx = sess.run("",{input_name:floatAstype})
@@ -132,19 +126,32 @@ def parse_contents(contents, filename, date):
     px.imshow(rgb_array)
 
     return html.Div([
-        #html.H5(filename),
-        #html.H6(datetime.datetime.fromtimestamp(date)),
+        dbc.Row(
+            [
+            #html.H5(filename),
+            #html.H6(datetime.datetime.fromtimestamp(date)),
 
-        # HTML images accept base64 encoded strings in the same format
-        # that is supplied by the upload
-        html.Div('original image'),
-        html.Img(src=contents),
+            # HTML images accept base64 encoded strings in the same format
+            # that is supplied by the upload
+            dbc.Col
+            (
+                html.Div([
+                    html.H5("Original image"),
+                    html.Img(id="original_image",src=contents)
+                    ])
+            ),
+            
+            dbc.Col
+            (    
+                html.Div([  
+                    html.H5("Constructed Image"),
+                    html.Img(id="constructed_img",src=new_image_string)
+                ])
 
-        
-        html.H5("Constructed Image"),
-        #html.H6(datetime.datetime.fromtimestamp(date)),
-        html.Img(src=new_image_string),
-  
+            ),
+
+            ]),
+        dbc.Button("Download Images",id="down-load",color="primary", className="mr-1"),    
     ])
 
     

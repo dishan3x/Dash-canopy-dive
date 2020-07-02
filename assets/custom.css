@@ -1,3 +1,7 @@
 #app-header{
     color:red;
 }
+
+#output-image-upload{
+    display:inline;
+}
