@@ -177,6 +177,79 @@ def parse_contents(contents, filename, date):
 
     return returnDiv
 
+def return_image(contents, filename, date):
+
+
+    # Decoding string base64 into an image
+    content_type, content_string = contents.split(',')
+    im = Image.open(BytesIO(base64.b64decode(content_string)))
+
+    # Resize of image and proper datatype
+    np_img = np.array(im)
+    #size = 512
+    size = 256
+    np_reshape = np.reshape(im,(1, 3, size, size))
+    floatAstype = np.float32(np_reshape)
+
+    # ONNX runtime
+    #sess = rt.InferenceSession("dishan_made_unet_model.onnx")
+    sess = rt.InferenceSession("dishan_segnet_v2.onnx")
+    input_name = sess.get_inputs()[0].name
+    output_name = sess.get_outputs()[-1].name
+    pred_onx = sess.run("",{input_name:floatAstype})
+
+    # size is 256
+    
+    # Creating the array 
+    rgb_array = np.zeros((size,size,3), 'uint8')
+  
+    # 1*1*3*512*512
+
+    # Choosing class of the highest index 
+    # highest probability of each pixel cell 
+    highest_index = np.argmax(pred_onx[0][0], axis=0)
+    
+
+    for x in range(size):
+        for y in range(size):
+            index = highest_index[x][y]
+            if index == 0:
+
+                # canopy
+                rgb_array[x,y,0] = 0
+                rgb_array[x,y,1] = 255
+                rgb_array[x,y,2] = 0
+
+            elif index == 1:
+
+                # soil
+                rgb_array[x,y,0] = 165
+                rgb_array[x,y,1] = 42
+                rgb_array[x,y,2] = 42
+
+            elif index == 2:
+
+                #stubble 
+                rgb_array[x,y,0] = 0
+                rgb_array[x,y,1] = 0
+                rgb_array[x,y,2] = 255
+            else:
+ 
+                #None
+                rgb_array[x,y,0] = 255
+                rgb_array[x,y,1] = 0
+                rgb_array[x,y,2] = 0
+
+
+    pil_img = Image.fromarray(rgb_array)
+    buff = BytesIO()
+    pil_img.save(buff, format="JPEG")
+    new_image_string = base64.b64encode(buff.getvalue()).decode("utf-8")
+    new_image_string = "data:image/JPEG;base64,"+new_image_string
+    
+
+    return new_image_string
+
     
 
 # call bacl for upload input 
@@ -194,9 +267,14 @@ def update_output(list_of_contents, list_of_names, list_of_dates):
         children = [
             parse_contents(c, n, d) for c, n, d in
             zip(list_of_contents, list_of_names, list_of_dates)]  # assigning c,n,d as  inputs and zip version of inputs
-        print(children)
-        print("$$$$$$$$$$$$$$",len(return_values))
-        return '',''
+        
+        
+        image_contructed = [
+            return_image(c, n, d) for c, n, d in
+            zip(list_of_contents, list_of_names, list_of_dates)]
+        #print(children)
+        #print("$$$$$$$$$$$$$$",len(return_values))
+        return children,image_contructed[0]
     else:
         return '',''
 
