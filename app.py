@@ -13,6 +13,10 @@ from io import BytesIO,StringIO
 import plotly.express as px
 import dash_bootstrap_components as dbc
 
+# Newly added to testing the iamge download
+from urllib.parse import quote as urlquote
+from flask import Flask, send_from_directory
+
 
 #external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css','dbc.themes.BOOTSTRAP']
 external_stylesheets = [dbc.themes.BOOTSTRAP]
@@ -46,7 +50,24 @@ body =dbc.Container([
         # Allow multiple files to be uploaded
         multiple=True
     ),
+
+    html.Div(id="output_to_test_download"),
     html.Div(id='output-image-upload'),
+    dbc.Button("Download Images",id="down-load-btn",color="primary", className="mr-1"),
+    html.A(
+        id="downloader",
+        download="image.png",
+        children=[
+            html.Button(
+                title="Download image",
+                #children=html.Img(
+                #    src="assets/some_image.svg",
+                #    className="button-image",
+                #),
+                className="inline_button",
+            )
+        ],
+    )
 ])
 
 # Collecting all components
@@ -122,10 +143,9 @@ def parse_contents(contents, filename, date):
     new_image_string = base64.b64encode(buff.getvalue()).decode("utf-8")
     new_image_string = "data:image/JPEG;base64,"+new_image_string
     
-    # px
-    px.imshow(rgb_array)
+ 
 
-    return html.Div([
+    returnDiv = html.Div([
         dbc.Row(
             [
             #html.H5(filename),
@@ -151,21 +171,34 @@ def parse_contents(contents, filename, date):
             ),
 
             ]),
-        dbc.Button("Download Images",id="down-load",color="primary", className="mr-1"),    
+      
     ])
+    
+
+    return returnDiv
 
     
 
-@app.callback(Output('output-image-upload', 'children'),
-              [Input('upload-image', 'contents')],
-              [State('upload-image', 'filename'),
-               State('upload-image', 'last_modified')])
+# call bacl for upload input 
+@app.callback(
+    [
+        Output(component_id='output-image-upload',component_property='children'),
+        Output(component_id="downloader",component_property="href"),
+    ],
+    [Input(component_id='upload-image', component_property= 'contents')],
+    [State('upload-image', 'filename'),
+    State('upload-image', 'last_modified')])
 def update_output(list_of_contents, list_of_names, list_of_dates):
     if list_of_contents is not None:
+        # children will return a html content
         children = [
             parse_contents(c, n, d) for c, n, d in
-            zip(list_of_contents, list_of_names, list_of_dates)]
-        return children
+            zip(list_of_contents, list_of_names, list_of_dates)]  # assigning c,n,d as  inputs and zip version of inputs
+        print(children)
+        print("$$$$$$$$$$$$$$",len(return_values))
+        return '',''
+    else:
+        return '',''
 
 
 
