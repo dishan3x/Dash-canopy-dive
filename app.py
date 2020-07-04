@@ -14,7 +14,6 @@ from io import BytesIO,StringIO
 import dash_bootstrap_components as dbc
 
 
-
 #external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css','dbc.themes.BOOTSTRAP']
 external_stylesheets = [dbc.themes.BOOTSTRAP]
 
