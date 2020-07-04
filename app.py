@@ -1,5 +1,4 @@
 import datetime
-
 import dash
 from dash.dependencies import Input, Output, State
 import dash_core_components as dcc
@@ -55,40 +54,52 @@ app.layout = html.Div([navbar,body])
 
 def analyse_image_func(contents, filename, date):
 
-
+    """
+        This fuction run the image through the onnx model 
+        and return the prediction relating to the classes
+        provided from the model. 
+    """
     # Decoding string base64 into an image
     content_type, content_string = contents.split(',')
+
+    # Decode base64 to bytes
     im = Image.open(BytesIO(base64.b64decode(content_string)))
 
-    # Resize of image and proper datatype
+    # Convert numpy array for further calculations
     np_img = np.array(im)
+    
+    # image should be arrange to the model specification
     #size = 512
-    size = 256
-    np_reshape = np.reshape(im,(1, 3, size, size))
+    size        = 256 # size is changed to 256 becuase the model is larger and could not upload to github
+    
+    # reshape input
+    np_reshape  = np.reshape(im,(1, 3, size, size))
     floatAstype = np.float32(np_reshape)
 
     # ONNX runtime
     #sess = rt.InferenceSession("dishan_made_unet_model.onnx")
-    sess = rt.InferenceSession("dishan_segnet_v2.onnx")
-    input_name = sess.get_inputs()[0].name
+    sess        = rt.InferenceSession("dishan_segnet_v2.onnx")
+    input_name  = sess.get_inputs()[0].name
     output_name = sess.get_outputs()[-1].name
-    pred_onx = sess.run("",{input_name:floatAstype})
 
-    # size is 256
-    
-    # Creating the array 
+    # Run the input in onnx model
+    pred_onx    = sess.run("",{input_name:floatAstype})
+
+
+    # Creating the image array 
     rgb_array = np.zeros((size,size,3), 'uint8')
   
-    # 1*1*3*512*512
-
+    
     # Choosing class of the highest index 
     # highest probability of each pixel cell 
     highest_probability_index = np.argmax(pred_onx[0][0], axis=0)
     
-
+    # convert prediction array to RGB image.
     for x in range(size):
         for y in range(size):
+
             index = highest_probability_index[x][y]
+            
             if index == 0:
 
                 # canopy -> green
@@ -127,8 +138,7 @@ def analyse_image_func(contents, filename, date):
     unique_group_name, counts = np.unique(highest_probability_index, return_counts=True)
     pixel_spread = dict(zip(unique_group_name, counts))
 
-    # Retreive the sum of pixel - 
-    # ex : 512 * 512 =  
+    # Retreive the sum of pixel 
     sum_pixel           = sum(counts) 
 
     # percentages for each group
@@ -144,19 +154,17 @@ def analyse_image_func(contents, filename, date):
         }
 
     # Create an ar
-    img_html_div_constructed = analysed_info_tohtml_func(contents, filename, date,new_image_string,pixel_count_data)
+    img_html_div_constructed = analysed_info_to_html_func(contents, filename, date,new_image_string,pixel_count_data)
 
 
     return img_html_div_constructed
 
 
 
-def analysed_info_tohtml_func(contents, filename, date, contructed_image,pixel_count_data):
+def analysed_info_to_html_func(contents, filename, date, contructed_image,pixel_count_data):
     '''
-        creating the html with the analysed data
+        creating the html with analysed data results
     '''
-
-
 
     images_div =dbc.Row(
             [
@@ -204,7 +212,7 @@ def analysed_info_tohtml_func(contents, filename, date, contructed_image,pixel_c
         table_header + table_body,
         id ="percentage_table",
         bordered=True,
-        dark=True,
+        #dark=True,
         hover=True,
         responsive=True,
         striped=True,
@@ -245,7 +253,7 @@ def update_output(list_of_contents, list_of_names, list_of_dates):
             zip(list_of_contents, list_of_names, list_of_dates)]
         return analysed_information
     else:
-        return '' # Place holder the when the call back is called in preload
+        return '' # Place holder for the call back
 
 
 
