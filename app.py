@@ -10,12 +10,9 @@ from PIL import Image
 #from skimage import io
 import base64
 from io import BytesIO,StringIO
-import plotly.express as px
+#import plotly.express as px
 import dash_bootstrap_components as dbc
 
-# Newly added to testing the iamge download
-from urllib.parse import quote as urlquote
-from flask import Flask, send_from_directory
 
 
 #external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css','dbc.themes.BOOTSTRAP']
@@ -30,7 +27,7 @@ navbar = dbc.NavbarSimple(
     dark=True,
 ) 
 
-body =dbc.Container([
+body = dbc.Container([
     dcc.Upload(
         id='upload-image',
         children=html.Div([
@@ -57,7 +54,7 @@ body =dbc.Container([
 # Collecting all components
 app.layout = html.Div([navbar,body])
 
-def analyse_image_fun(contents, filename, date):
+def analyse_image_func(contents, filename, date):
 
 
     # Decoding string base64 into an image
@@ -116,23 +113,30 @@ def analyse_image_fun(contents, filename, date):
 
 
 
+    # convert RGB array to base64
     pil_img = Image.fromarray(rgb_array)
-    buff = BytesIO()
+    buff    = BytesIO()
     pil_img.save(buff, format="JPEG")
     new_image_string = base64.b64encode(buff.getvalue()).decode("utf-8")
     new_image_string = "data:image/JPEG;base64,"+new_image_string
 
 
-    # Getting the perncentage value 
-    unique, counts = np.unique(highest_probability_index, return_counts=True)
-    pixel_spread = dict(zip(unique, counts))
+    # Retrieving pixel count in each groups
+    # canopy - 0
+    # soil   - 1
+    # stubble- 3 
+    unique_group_name, counts = np.unique(highest_probability_index, return_counts=True)
+    pixel_spread = dict(zip(unique_group_name, counts))
 
-    print(pixel_spread)
-    print(sum(counts))
+    # Retreive the sum of pixel - 
+    # ex : 512 * 512 =  
     sum_pixel           = sum(counts) 
-    canopy_percentage   = pixel_spread[0]/sum_pixel
-    soil_percentage     = pixel_spread[1]/sum_pixel
-    stubble_percentage  = pixel_spread[2]/sum_pixel
+
+    # percentages for each group
+    canopy_percentage   = round((pixel_spread[0]/sum_pixel),2)
+    soil_percentage     = round((pixel_spread[1]/sum_pixel),2)
+    stubble_percentage  = round((pixel_spread[2]/sum_pixel),2)
+
 
     pixel_count_data = {
         'canopy_p':canopy_percentage,
@@ -140,58 +144,22 @@ def analyse_image_fun(contents, filename, date):
         'stubble_p':stubble_percentage
         }
 
-    #img_html_div_constructed = [
-    #           analysed_info_tohtml_func(c, n, d, i) for c, n, d, i in
-    #            zip(list_of_contents, list_of_names, list_of_dates,re_created_string)
-    #        ] 
-
+    # Create an ar
     img_html_div_constructed = analysed_info_tohtml_func(contents, filename, date,new_image_string,pixel_count_data)
 
 
-    
-    #analysed_information = {
-    #'constructed_image':new_image_string,
-    #'percentages':pixel_count_data
-    #}
-
     return img_html_div_constructed
 
+
+
 def analysed_info_tohtml_func(contents, filename, date, contructed_image,pixel_count_data):
+    '''
+        creating the html with the analysed data
+    '''
 
 
-    table_header = [
-        html.Thead(html.Tr([html.Th("Type"), html.Th("Percentage")]))
-    ]
 
-    row1 = html.Tr([html.Td("Canopy"), html.Td(pixel_count_data['canopy_p'])])
-    row2 = html.Tr([html.Td("Soil"), html.Td(pixel_count_data['soil_p'])])
-    row3 = html.Tr([html.Td("Stubble"), html.Td(pixel_count_data['stubble_p'])])
- 
-
-    table_body = [html.Tbody([row1, row2, row3])]
-
-    table = [dbc.Table(table_header + table_body, bordered=True)]
-
-    download_button = html.A(
-            id="download-content",
-            download="image.png",
-            href = contructed_image,
-            children=[
-            dbc.Button(
-                "Download image",
-                id="down-load_button",
-                color="primary",
-
-                #children=html.Img(
-                #    src="assets/some_image.svg",
-                #    className="button-image",
-                #),
-                className="inline_button",
-            )
-            ])
-
-    returnDiv = html.Div([
-        dbc.Row(
+    images_div =dbc.Row(
             [
             #html.H5(filename),
             #html.H6(datetime.datetime.fromtimestamp(date)),
@@ -215,40 +183,67 @@ def analysed_info_tohtml_func(contents, filename, date, contructed_image,pixel_c
 
             ),
 
-            ]),
-            #table,
+            ]
+            )
+
+       
+    # creating table for the percentage values
+    table_header = [
+        html.Thead(html.Tr([html.Th("Type"), html.Th("Percentage")]))
+    ]
+
+    row1 = html.Tr([html.Td("Canopy"), html.Td(pixel_count_data['canopy_p'])])
+    row2 = html.Tr([html.Td("Soil"), html.Td(pixel_count_data['soil_p'])])
+    row3 = html.Tr([html.Td("Stubble"), html.Td(pixel_count_data['stubble_p'])])
+ 
+
+    table_body = [html.Tbody([row1, row2, row3])]
+
+  
+    table = dbc.Table(
+        # using the same table as in the above example
+        table_header + table_body,
+        id ="percentage_table",
+        bordered=True,
+        dark=True,
+        hover=True,
+        responsive=True,
+        striped=True,
+    )
+
+    download_button = html.A(
+            id="download-content",
+            download="image.png",
+            href = contructed_image,
+            children=[
+            dbc.Button(
+                "Download image",
+                id="down-load_button",
+                color="primary",
+                className="inline_button",
+            )
+            ])  
+
+    returnDiv = html.Div([
+            images_div,
+            table,
             download_button,
     ])
     
 
     return returnDiv    
     
-      
-
 # call bacl for upload input 
 @app.callback(Output(component_id='output-image-upload',component_property='children'),
     [Input(component_id='upload-image', component_property= 'contents')],
     [State('upload-image', 'filename'),
     State('upload-image', 'last_modified')])
 def update_output(list_of_contents, list_of_names, list_of_dates):
+
     if list_of_contents is not None:
-        # children will return a html content
-        #children = [
-        #    analysed_info_tohtml_func(c, n, d) for c, n, d in
-        #    zip(list_of_contents, list_of_names, list_of_dates)]  # assigning c,n,d as  inputs and zip version of inputs
-        
-        
         analysed_information = [
-            analyse_image_fun(c, n, d) for c, n, d in
+            analyse_image_func(c, n, d) for c, n, d in
             zip(list_of_contents, list_of_names, list_of_dates)]
-
-        #re_created_string = analysed_information[0]['constructed_image']
-        # Need to pass all the information in creating the divs
-        #img_html_div_constructed = [
-        #        analysed_info_tohtml_func(c, n, d, i) for c, n, d, i in
-        #        zip(list_of_contents, list_of_names, list_of_dates,re_created_string)
-        #    ]  # assigning c,n,d as  inputs and zip version of inputs
-
         return analysed_information
     else:
         return '' # Place holder the when the call back is called in preload
