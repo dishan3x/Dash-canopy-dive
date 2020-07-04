@@ -10,7 +10,10 @@ I was able to run onnxruntime on anaconda environment. It wasnt successful due t
 The best way to try this out is using a ubuntu environment. 
 
 pip install dash<br>
-pip install onnxruntime 
+pip install onnxruntime<br> 
+pip install dash-bootstrap-components
+
+requirment file will be added in near future.
 
 Coud not upload the unet model due to file size restrictions in github. 
 [link](https://git-lfs.github.com/)
