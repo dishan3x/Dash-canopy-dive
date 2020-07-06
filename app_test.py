@@ -2,6 +2,7 @@ import dash
 import dash_html_components as html
 import dash_core_components as dcc
 import dash_bootstrap_components as dbc 
+from dash.dependencies import Input, Output, State
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
@@ -35,9 +36,10 @@ def update_output(value):
     return 'You have selected "{}"'.format(value)
 
 @app.callback(
-    dash.dependencies.Output('down-load-btn', 'value'),
-    [dash.dependencies.Input('demo-dropdown', 'value')])
-def update_output(value):
+    dash.dependencies.Output('some_id', 'children'),
+    [dash.dependencies.Input('demo-dropdown', 'value')],
+    [State('dishan_values', 'data')])
+def update_output(value,store_data):
     return 'You have selected "{}"'.format(value)
 
 

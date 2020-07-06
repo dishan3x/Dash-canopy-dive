@@ -25,7 +25,29 @@ navbar = dbc.NavbarSimple(
     dark=True,
 ) 
 
+#dropdown = dbc.DropdownMenu(
+#    label="models",
+#    className="select-model",
+#    children=[
+#        dbc.DropdownMenuItem("dishan_segnet_v2"),
+#        dbc.DropdownMenuItem("Item 2"),
+#        dbc.DropdownMenuItem("Item 3"),
+#    ],
+#    id="select-model"
+#)
+
+dropdown =  dcc.Dropdown(
+    id='model-dropdown',
+        options=[
+            {'label': 'Segnet', 'value': 'dishan_segnet_v2'},
+            {'label': 'Arriving soon', 'value': 'unet'},
+            {'label': 'Arriving soon', 'value': 'something else'}
+        ],
+        value='dishan_segnet_v2'
+    )
+
 body = dbc.Container([
+    dcc.Store(id='select_model_value',storage_type='local'),
     dcc.Upload(
         id='upload-image',
         children=html.Div([
@@ -50,9 +72,9 @@ body = dbc.Container([
 ])
 
 # Collecting all components
-app.layout = html.Div([navbar,body])
+app.layout = html.Div([navbar,dropdown,body])
 
-def analyse_image_func(contents, filename, date):
+def analyse_image_func(contents, filename, date,selected_model):
 
     """
         This fuction run the image through the onnx model 
@@ -78,6 +100,7 @@ def analyse_image_func(contents, filename, date):
 
     # ONNX runtime
     #sess = rt.InferenceSession("dishan_made_unet_model.onnx")
+    model_name = selected_model+".onnx"
     sess        = rt.InferenceSession("dishan_segnet_v2.onnx")
     input_name  = sess.get_inputs()[0].name
     output_name = sess.get_outputs()[-1].name
@@ -240,21 +263,27 @@ def analysed_info_to_html_func(contents, filename, date, contructed_image,pixel_
 
     return returnDiv    
     
-# call bacl for upload input 
+# call back for upload input 
 @app.callback(Output(component_id='output-image-upload',component_property='children'),
     [Input(component_id='upload-image', component_property= 'contents')],
     [State('upload-image', 'filename'),
-    State('upload-image', 'last_modified')])
-def update_output(list_of_contents, list_of_names, list_of_dates):
+    State('upload-image', 'last_modified'),
+    State('select_model_value','data')])
+def update_output(list_of_contents, list_of_names, list_of_dates,selected_model):
 
     if list_of_contents is not None:
         analysed_information = [
-            analyse_image_func(c, n, d) for c, n, d in
-            zip(list_of_contents, list_of_names, list_of_dates)]
+            analyse_image_func(c, n, d, m) for c, n, d, m in
+            zip(list_of_contents, list_of_names, list_of_dates,selected_model)]
         return analysed_information
     else:
         return '' # Place holder for the call back
 
+@app.callback(
+    Output('select_model_value', 'data'),
+    [Input('model-dropdown', 'value')])
+def update_output(value):
+    return value
 
 
 
