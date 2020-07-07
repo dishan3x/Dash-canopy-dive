@@ -19,8 +19,8 @@ def analyse_image_func(contents, filename, date,selected_model):
         provided from the model. 
     """
     model_dict = {
-        '1':"dishan_made_simple_segnet_model.onnx",
-        '2':"dishan_segnet_v2.onnx",
+        '1':"models/dishan_made_simple_segnet_model.onnx",
+        '2':"models/dishan_segnet_v2.onnx",
         '3':"soon.onnx"
     }
     
