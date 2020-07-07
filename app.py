@@ -39,11 +39,11 @@ navbar = dbc.NavbarSimple(
 dropdown =  dcc.Dropdown(
     id='model-dropdown',
         options=[
+            {'label': 'Simple_light_segnet', 'value': 'dishan_made_simple_segnet_model'},
             {'label': 'Segnet', 'value': 'dishan_segnet_v2'},
-            {'label': 'Arriving soon', 'value': 'unet'},
             {'label': 'Arriving soon', 'value': 'something else'}
         ],
-        value='dishan_segnet_v2'
+        value='dishan_made_simple_segnet_model'
     )
 
 body = dbc.Container([
@@ -87,21 +87,27 @@ def analyse_image_func(contents, filename, date,selected_model):
     # Decode base64 to bytes
     im = Image.open(BytesIO(base64.b64decode(content_string)))
 
-    # Convert numpy array for further calculations
-    np_img = np.array(im)
-    
     # image should be arrange to the model specification
     #size = 512
-    size        = 256 # size is changed to 256 becuase the model is larger and could not upload to github
+    size        = 512 # size is changed to 256 becuase the model is larger and could not upload to github
     
+    # resize the image to to actual size 
+    im_resized  = im.resize((size,size))
+
+    # Convert numpy array for further calculations
+    np_img = np.array(im_resized)
+    
+
     # reshape input
-    np_reshape  = np.reshape(im,(1, 3, size, size))
+    np_reshape  = np.reshape(np_img,(1, 3, size, size))
     floatAstype = np.float32(np_reshape)
 
     # ONNX runtime
     #sess = rt.InferenceSession("dishan_made_unet_model.onnx")
+    selected_model = "dishan_made_simple_segnet_model"
     model_name = selected_model+".onnx"
-    sess        = rt.InferenceSession("dishan_segnet_v2.onnx")
+    #sess        = rt.InferenceSession("dishan_segnet_v2.onnx")
+    sess        = rt.InferenceSession(model_name)
     input_name  = sess.get_inputs()[0].name
     output_name = sess.get_outputs()[-1].name
 
