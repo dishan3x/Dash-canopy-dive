@@ -29,13 +29,43 @@ navbar = dbc.NavbarSimple(
 
 CORA_LOGO  = "assets/logo_1.PNG"
 
-search_bar = dbc.Row(
+modal_div_about_us = html.Div(
     [
-        dbc.Col(dbc.Input(type="search", placeholder="Search")),
-        dbc.Col(
-            dbc.Button("Search", color="primary", className="ml-2"),
-            width="auto",
+        dbc.Button("About us", id="open_modal_btn_in_about_us_modal"),
+        dbc.Modal(
+            [
+                dbc.ModalHeader("About us"),
+                dbc.ModalBody("This is the content of the modal"),
+                dbc.ModalFooter(
+                    dbc.Button("Close", id="close_modal_btn_in_about_us_modal", className="ml-auto")
+                ),
+            ],
+            id="modal_about_us",
         ),
+    ]
+)
+
+modal_div_instructions= html.Div(
+    [
+        dbc.Button("Instructions", id="open_modal_btn_in_instructions_modal"),
+        dbc.Modal(
+            [
+                dbc.ModalHeader("Header"),
+                dbc.ModalBody("This is the content of the modal"),
+                dbc.ModalFooter(
+                    dbc.Button("Close", id="close_modal_btn_in_instructions_modal", className="ml-auto")
+                ),
+            ],
+            id="modal_instructions",
+        ),
+    ]
+) 
+
+
+nav_items = dbc.Row(
+    [
+        dbc.Col(modal_div_about_us),
+        dbc.Col(modal_div_instructions),
     ],
     no_gutters=True,
     className="ml-auto flex-nowrap mt-3 mt-md-0",
@@ -57,7 +87,7 @@ navbar = dbc.Navbar(
             href="https://github.com/dishan3x/Dash-canopy-dive",
         ),
         dbc.NavbarToggler(id="navbar-toggler"),
-        dbc.Collapse(search_bar, id="navbar-collapse", navbar=True),
+        dbc.Collapse(nav_items, id="navbar-collapse", navbar=True),
     ],
     color="dark",
     dark=True,
@@ -94,7 +124,7 @@ body = dbc.Container([
         id='upload-image',
         children=html.Div([
             'Drag and Drop or ',
-            html.A('Select Files')
+            html.A('Select image Files')
         ]),
         # Allow multiple files to be uploaded
         multiple=True
@@ -122,11 +152,38 @@ def update_output(list_of_contents, list_of_names, list_of_dates,model):
     else:
         return '' # Place holder for the call back
 
-#@app.callback(
-#    Output('select_model_value', 'data'),
-#    [Input('model-dropdown', 'value')])
-#def update_output(value):
-#    return value
+@app.callback(
+    Output("modal_about_us", "is_open"),
+    [Input("open_modal_btn_in_about_us_modal", "n_clicks"), Input("close_modal_btn_in_about_us_modal", "n_clicks")],
+    [State("modal_about_us", "is_open")],
+)
+def toggle_modal(n1, n2, is_open):
+    if n1 or n2:
+        return not is_open
+    return is_open
+
+# ********   call back for modal *****************
+@app.callback(
+    Output("modal_instructions", "is_open"),
+    [Input("open_modal_btn_in_instructions_modal", "n_clicks"), Input("close_modal_btn_in_instructions_modal", "n_clicks")],
+    [State("modal_instructions", "is_open")],
+)
+def toggle_modal(n1, n2, is_open):
+    if n1 or n2:
+        return not is_open
+    return is_open
+
+
+# add callback for toggling the collapse on small screens
+@app.callback(
+    Output("navbar-collapse", "is_open"),
+    [Input("navbar-toggler", "n_clicks")],
+    [State("navbar-collapse", "is_open")],
+)
+def toggle_navbar_collapse(n, is_open):
+    if n:
+        return not is_open
+    return is_open
 
 
 
