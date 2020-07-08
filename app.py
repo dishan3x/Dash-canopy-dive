@@ -13,21 +13,15 @@ from io import BytesIO,StringIO
 import dash_bootstrap_components as dbc
 from image_utils import analyse_image_func
 
-
+# Select themes
 #external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css','dbc.themes.BOOTSTRAP']
 external_stylesheets = [dbc.themes.BOOTSTRAP]
 external_stylesheets = [dbc.themes.COSMO]
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
-""" 
-navbar = dbc.NavbarSimple(
-    brand="Cora",
-    color="primary",
-    dark=True,
-)  """
 
-CORA_LOGO  = "assets/logo_1.PNG"
+CORA_LOGO  = "assets/logo/logo_1.PNG"
 
 modal_div_about_us = html.Div(
     [
@@ -50,8 +44,8 @@ modal_div_instructions= html.Div(
         dbc.Button("Instructions", id="open_modal_btn_in_instructions_modal"),
         dbc.Modal(
             [
-                dbc.ModalHeader("Header"),
-                dbc.ModalBody("This is the content of the modal"),
+                dbc.ModalHeader("Instructions"),
+                dbc.ModalBody("Instruction are coming soon"),
                 dbc.ModalFooter(
                     dbc.Button("Close", id="close_modal_btn_in_instructions_modal", className="ml-auto")
                 ),
@@ -104,32 +98,40 @@ navbar = dbc.Navbar(
 #    id="select-model"
 #)
 
-dropdown =  dcc.Dropdown(
-    id='model-dropdown',
+dropdown =  html.Span(
+    id="drop-down-div",
+children=[
+    html.Span(" Model :  ",id="drop-down-title"),
+    dcc.Dropdown(
+        id='model-dropdown',
         options=[
             {'label': 'Simple segnet', 'value': '1'},
             {'label': 'Unet', 'value': '2'},
             {'label': 'Arriving soon', 'value': '3'}
-        ],
-        value='1',
+            ],
+            value='1',
     )
-
-subnav_bar = html.Div(
-    id="sub-nav-bar",
-    children=[dropdown],
+    ]
 )
-body = dbc.Container([
-    dcc.Store(id='select_model_value',storage_type='local'),
-    dcc.Upload(
+
+upload_btn =  dcc.Upload(
         id='upload-image',
         children=html.Div([
-            'Drag and Drop or ',
-            html.A('Select image Files')
+            #'Select image ',
+            #html.A('Select image Files')
+            dbc.Button("Upload picture",id="upload-btn")
         ]),
         # Allow multiple files to be uploaded
         multiple=True
-    ),
-
+    )
+subnav_bar = html.Div(
+    dbc.Row(
+        id="sub-nav-bar",
+        children=[dropdown,
+        upload_btn],
+    )
+)
+body = dbc.Container([
     html.Div(id='output-image-upload'),
 ])
 
@@ -152,6 +154,9 @@ def update_output(list_of_contents, list_of_names, list_of_dates,model):
     else:
         return '' # Place holder for the call back
 
+
+
+# ********   call back for modal *****************
 @app.callback(
     Output("modal_about_us", "is_open"),
     [Input("open_modal_btn_in_about_us_modal", "n_clicks"), Input("close_modal_btn_in_about_us_modal", "n_clicks")],
@@ -162,7 +167,6 @@ def toggle_modal(n1, n2, is_open):
         return not is_open
     return is_open
 
-# ********   call back for modal *****************
 @app.callback(
     Output("modal_instructions", "is_open"),
     [Input("open_modal_btn_in_instructions_modal", "n_clicks"), Input("close_modal_btn_in_instructions_modal", "n_clicks")],
@@ -172,6 +176,8 @@ def toggle_modal(n1, n2, is_open):
     if n1 or n2:
         return not is_open
     return is_open
+
+
 
 
 # add callback for toggling the collapse on small screens
