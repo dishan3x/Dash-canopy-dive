@@ -16,15 +16,52 @@ from image_utils import analyse_image_func
 
 #external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css','dbc.themes.BOOTSTRAP']
 external_stylesheets = [dbc.themes.BOOTSTRAP]
+external_stylesheets = [dbc.themes.COSMO]
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
-
+""" 
 navbar = dbc.NavbarSimple(
     brand="Cora",
     color="primary",
     dark=True,
-) 
+)  """
+
+CORA_LOGO  = "assets/logo_1.PNG"
+
+search_bar = dbc.Row(
+    [
+        dbc.Col(dbc.Input(type="search", placeholder="Search")),
+        dbc.Col(
+            dbc.Button("Search", color="primary", className="ml-2"),
+            width="auto",
+        ),
+    ],
+    no_gutters=True,
+    className="ml-auto flex-nowrap mt-3 mt-md-0",
+    align="center",
+)
+
+navbar = dbc.Navbar(
+    [
+        html.A(
+            # Use row and col to control vertical alignment of logo / brand
+            dbc.Row(
+                [
+                    dbc.Col(html.Img(id="logo_img",src=CORA_LOGO, height="30px")),
+                    dbc.Col(dbc.NavbarBrand("Cora", className="ml-2")),
+                ],
+                align="center",
+                no_gutters=True,
+            ),
+            href="https://github.com/dishan3x/Dash-canopy-dive",
+        ),
+        dbc.NavbarToggler(id="navbar-toggler"),
+        dbc.Collapse(search_bar, id="navbar-collapse", navbar=True),
+    ],
+    color="dark",
+    dark=True,
+)
 
 #dropdown = dbc.DropdownMenu(
 #    label="models",
@@ -40,13 +77,17 @@ navbar = dbc.NavbarSimple(
 dropdown =  dcc.Dropdown(
     id='model-dropdown',
         options=[
-            {'label': 'Simple_light_segnet', 'value': '1'},
-            {'label': 'Segnet', 'value': '2'},
+            {'label': 'Simple segnet', 'value': '1'},
+            {'label': 'Unet', 'value': '2'},
             {'label': 'Arriving soon', 'value': '3'}
         ],
         value='1',
     )
 
+subnav_bar = html.Div(
+    id="sub-nav-bar",
+    children=[dropdown],
+)
 body = dbc.Container([
     dcc.Store(id='select_model_value',storage_type='local'),
     dcc.Upload(
@@ -55,16 +96,6 @@ body = dbc.Container([
             'Drag and Drop or ',
             html.A('Select Files')
         ]),
-        style={
-            'width': '100%',
-            'height': '60px',
-            'lineHeight': '60px',
-            'borderWidth': '1px',
-            'borderStyle': 'dashed',
-            'borderRadius': '5px',
-            'textAlign': 'center',
-            'margin': '10px',
-        },
         # Allow multiple files to be uploaded
         multiple=True
     ),
@@ -73,7 +104,7 @@ body = dbc.Container([
 ])
 
 # Collecting all components
-app.layout = html.Div([navbar,dropdown,body])
+app.layout = html.Div([navbar,subnav_bar,body])
 
     
 # call back for upload input 
@@ -83,7 +114,6 @@ app.layout = html.Div([navbar,dropdown,body])
     State('upload-image', 'last_modified'),
     State('model-dropdown','value')])
 def update_output(list_of_contents, list_of_names, list_of_dates,model):
-
     if list_of_contents is not None:
         analysed_information = [
             analyse_image_func(c, n, d, m) for c, n, d, m in
