@@ -47,3 +47,19 @@
 #logo_img{
     border-radius: 15%;
 }
+
+#react-select-2--value-item{
+    color:white !important;
+}
+.Select-control{
+    background-color: #4773c0 ; 
+    color:white !important;
+}
+
+.Select-clear{
+    display: none;
+}
+
+.navbar-brand{
+    font-size: 160%;
+}

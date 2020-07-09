@@ -97,6 +97,7 @@ navbar = dbc.Navbar(
 #    ],
 #    id="select-model"
 #)
+#  etc :background-color: #ff7518;
 
 dropdown =  html.Span(
     id="drop-down-div",
@@ -119,7 +120,7 @@ upload_btn =  dcc.Upload(
         children=html.Div([
             #'Select image ',
             #html.A('Select image Files')
-            dbc.Button("Upload picture",id="upload-btn")
+            dbc.Button("Upload image",id="upload-btn",color= "warning")
         ]),
         # Allow multiple files to be uploaded
         multiple=True

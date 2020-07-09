@@ -140,6 +140,8 @@ def analysed_info_to_html_func(contents, filename, date, contructed_image,pixel_
 
             # HTML images accept base64 encoded strings in the same format
             # that is supplied by the upload
+
+
             dbc.Col
             (
                 html.Div([
@@ -155,6 +157,41 @@ def analysed_info_to_html_func(contents, filename, date, contructed_image,pixel_
                     html.Img(id="constructed_img",src=contructed_image)
                 ])
 
+            ),
+
+            ]
+            )
+    
+    
+    percentage_circles =dbc.Row(
+            [
+
+            dbc.Col
+            (
+                html.Div(children=[
+                    html.H5("Canopy"),
+                    html.A(pixel_count_data['canopy_p'])
+                    ],
+                    className="rounded-circle")
+            ),
+            
+            dbc.Col
+            (    
+                html.Div(children=[  
+                    html.H5("Soil"),
+                    html.A(pixel_count_data['soil_p'])
+                ],
+                className="rounded-circle")
+
+            ),
+
+            dbc.Col
+            (
+                html.Div(children=[
+                    html.H5("Stubble"),
+                    html.A(pixel_count_data['stubble_p'])
+                    ],
+                    className="rounded-circle")
             ),
 
             ]
@@ -199,8 +236,8 @@ def analysed_info_to_html_func(contents, filename, date, contructed_image,pixel_
             ])  
 
     returnDiv = html.Div([
+            percentage_circles,
             images_div,
-            table,
             download_button,
     ])
     
