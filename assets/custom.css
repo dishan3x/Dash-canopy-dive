@@ -56,10 +56,18 @@
     color:white !important;
 }
 
-.Select-clear{
+.Select-clear, .Select-clear-zone{
     display: none;
 }
 
 .navbar-brand{
     font-size: 160%;
+}
+
+.result-titles{
+    font-size: 200%;
+}
+
+.image-container{
+    display:grid;
 }

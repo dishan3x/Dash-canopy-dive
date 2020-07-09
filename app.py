@@ -125,12 +125,19 @@ upload_btn =  dcc.Upload(
         # Allow multiple files to be uploaded
         multiple=True
     )
+#subnav_bar = html.Div(
+#    dbc.Row(
+#        id="sub-nav-bar",
+#        children=[dropdown,
+#        upload_btn],
+#    )
+#)
+
 subnav_bar = html.Div(
-    dbc.Row(
         id="sub-nav-bar",
         children=[dropdown,
         upload_btn],
-    )
+
 )
 body = dbc.Container([
     html.Div(id='output-image-upload'),

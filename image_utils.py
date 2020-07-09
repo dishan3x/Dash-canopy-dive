@@ -140,27 +140,51 @@ def analysed_info_to_html_func(contents, filename, date, contructed_image,pixel_
 
             # HTML images accept base64 encoded strings in the same format
             # that is supplied by the upload
-
-
-            dbc.Col
-            (
-                html.Div([
-                    html.H5("Original image"),
-                    html.Img(id="original_image",src=contents)
-                    ])
-            ),
             
-            dbc.Col
-            (    
-                html.Div([  
+            html.Div(
+                className="image-container",
+                children=[
+                    html.H5("Original image"),
+                    html.Img(id="original-image",src=contents),
+                    html.A(
+                        id="download-content-original",
+                        download="image.png",
+                        href = contents,
+                        children=[
+                            dbc.Button(
+                                "Download image",
+                                id="down-load_button",
+                                color="primary",
+                                className="inline_button",
+                                )
+                            ]
+                        )  
+                ]
+                ),
+
+            html.Div(
+                className="image-container",
+                children=[
                     html.H5("Constructed Image"),
-                    html.Img(id="constructed_img",src=contructed_image)
-                ])
-
-            ),
-
+                    html.Img(id="constructed-image",src=contructed_image),
+                    html.A(
+                        id="download-content-construct",
+                        download="image.png",
+                        href = contructed_image,
+                        children=[
+                            dbc.Button(
+                                "Download image",
+                                id="down-load_button",
+                                color="primary",
+                                className="inline_button",
+                                )
+                        ]
+                        ) 
+                ]
+                ),
+            
             ]
-            )
+        )
     
     
     percentage_circles =dbc.Row(
@@ -169,8 +193,8 @@ def analysed_info_to_html_func(contents, filename, date, contructed_image,pixel_
             dbc.Col
             (
                 html.Div(children=[
-                    html.H5("Canopy"),
-                    html.A(pixel_count_data['canopy_p'])
+                    html.H6("Canopy"),
+                    html.A(pixel_count_data['canopy_p'],className="result-titles")
                     ],
                     className="rounded-circle")
             ),
@@ -178,8 +202,8 @@ def analysed_info_to_html_func(contents, filename, date, contructed_image,pixel_
             dbc.Col
             (    
                 html.Div(children=[  
-                    html.H5("Soil"),
-                    html.A(pixel_count_data['soil_p'])
+                    html.H6("Soil"),
+                    html.A(pixel_count_data['soil_p'],className="result-titles")
                 ],
                 className="rounded-circle")
 
@@ -188,8 +212,8 @@ def analysed_info_to_html_func(contents, filename, date, contructed_image,pixel_
             dbc.Col
             (
                 html.Div(children=[
-                    html.H5("Stubble"),
-                    html.A(pixel_count_data['stubble_p'])
+                    html.H6("Stubble"),
+                    html.A(pixel_count_data['stubble_p'],className="result-titles")
                     ],
                     className="rounded-circle")
             ),
@@ -222,23 +246,23 @@ def analysed_info_to_html_func(contents, filename, date, contructed_image,pixel_
         striped=True,
     )
 
-    download_button = html.A(
-            id="download-content",
-            download="image.png",
-            href = contructed_image,
-            children=[
-            dbc.Button(
-                "Download image",
-                id="down-load_button",
-                color="primary",
-                className="inline_button",
-            )
-            ])  
+    #download_button = html.A(
+    #        id="download-content",
+    #        download="image.png",
+    #        href = contructed_image,
+    #        children=[
+    #        dbc.Button(
+    #            "Download image",
+    #            id="down-load_button",
+    #            color="primary",
+    #            className="inline_button",
+    #        )
+    #        ])  
 
     returnDiv = html.Div([
             percentage_circles,
             images_div,
-            download_button,
+            #download_button,
     ])
     
 
