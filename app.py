@@ -29,7 +29,7 @@ modal_div_about_us = html.Div(
         dbc.Modal(
             [
                 dbc.ModalHeader("About us"),
-                dbc.ModalBody("This is the content of the modal"),
+                dbc.ModalBody("This app was developed by the programmers"),
                 dbc.ModalFooter(
                     dbc.Button("Close", id="close_modal_btn_in_about_us_modal", className="ml-auto")
                 ),

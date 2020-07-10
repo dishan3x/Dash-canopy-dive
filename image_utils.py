@@ -39,92 +39,97 @@ def analyse_image_func(contents, filename, date,selected_model):
     # Convert numpy array for further calculations
     np_img = np.array(im_resized)
     
+    try:
+        # reshape input
+        np_reshape  = np.reshape(np_img,(1, 3, size, size))
+        floatAstype = np.float32(np_reshape)
 
-    # reshape input
-    np_reshape  = np.reshape(np_img,(1, 3, size, size))
-    floatAstype = np.float32(np_reshape)
+        # Run ONNX runtime
+        sess        = rt.InferenceSession(model_dict[selected_model])
+        input_name  = sess.get_inputs()[0].name
+        output_name = sess.get_outputs()[-1].name
 
-    # Run ONNX runtime
-    sess        = rt.InferenceSession(model_dict[selected_model])
-    input_name  = sess.get_inputs()[0].name
-    output_name = sess.get_outputs()[-1].name
-
-    # Run the input in onnx model
-    pred_onx    = sess.run("",{input_name:floatAstype})
+        # Run the input in onnx model
+        pred_onx    = sess.run("",{input_name:floatAstype})
 
 
-    # Creating the image array 
-    rgb_array = np.zeros((size,size,3), 'uint8')
-  
+        # Creating the image array 
+        rgb_array = np.zeros((size,size,3), 'uint8')
     
-    # Choosing class of the highest index 
-    # highest probability of each pixel cell 
-    highest_probability_index = np.argmax(pred_onx[0][0], axis=0)
-    
-    # convert prediction array to RGB image.
-    for x in range(size):
-        for y in range(size):
+        
+        # Choosing class of the highest index 
+        # highest probability of each pixel cell 
+        highest_probability_index = np.argmax(pred_onx[0][0], axis=0)
+        
+        # convert prediction array to RGB image.
+        for x in range(size):
+            for y in range(size):
 
-            index = highest_probability_index[x][y]
-            
-            if index == 0:
+                index = highest_probability_index[x][y]
+                
+                if index == 0:
 
-                # canopy -> green
-                rgb_array[x,y,0] = 0
-                rgb_array[x,y,1] = 255
-                rgb_array[x,y,2] = 0
+                    # canopy -> green
+                    rgb_array[x,y,0] = 0
+                    rgb_array[x,y,1] = 255
+                    rgb_array[x,y,2] = 0
 
-            elif index == 1:
+                elif index == 1:
 
-                # soil -> brown
-                rgb_array[x,y,0] = 165
-                rgb_array[x,y,1] = 42
-                rgb_array[x,y,2] = 42
+                    # soil -> brown
+                    rgb_array[x,y,0] = 165
+                    rgb_array[x,y,1] = 42
+                    rgb_array[x,y,2] = 42
 
-            elif index == 2:
+                elif index == 2:
 
-                #stubble  -> blue
-                rgb_array[x,y,0] = 0
-                rgb_array[x,y,1] = 0
-                rgb_array[x,y,2] = 255
-
-
-
-    # convert RGB array to base64
-    pil_img = Image.fromarray(rgb_array)
-    buff    = BytesIO()
-    pil_img.save(buff, format="JPEG")
-    new_image_string = base64.b64encode(buff.getvalue()).decode("utf-8")
-    new_image_string = "data:image/JPEG;base64,"+new_image_string
+                    #stubble  -> blue
+                    rgb_array[x,y,0] = 0
+                    rgb_array[x,y,1] = 0
+                    rgb_array[x,y,2] = 255
 
 
-    # Retrieving pixel count in each groups
-    # canopy - 0
-    # soil   - 1
-    # stubble- 3 
-    unique_group_name, counts = np.unique(highest_probability_index, return_counts=True)
-    pixel_spread = dict(zip(unique_group_name, counts))
 
-    # Retreive the sum of pixel 
-    sum_pixel           = sum(counts) 
-
-    # percentages for each group
-    canopy_percentage   = round((pixel_spread[0]/sum_pixel),2)
-    soil_percentage     = round((pixel_spread[1]/sum_pixel),2)
-    stubble_percentage  = round((pixel_spread[2]/sum_pixel),2)
+        # convert RGB array to base64
+        pil_img = Image.fromarray(rgb_array)
+        buff    = BytesIO()
+        pil_img.save(buff, format="JPEG")
+        new_image_string = base64.b64encode(buff.getvalue()).decode("utf-8")
+        new_image_string = "data:image/JPEG;base64,"+new_image_string
 
 
-    pixel_count_data = {
-        'canopy_p':canopy_percentage,
-        'soil_p':soil_percentage,
-        'stubble_p':stubble_percentage
-        }
+        # Retrieving pixel count in each groups
+        # canopy - 0
+        # soil   - 1
+        # stubble- 3 
+        unique_group_name, counts = np.unique(highest_probability_index, return_counts=True)
+        pixel_spread = dict(zip(unique_group_name, counts))
 
-    # Create an ar
-    img_html_div_constructed = analysed_info_to_html_func(contents, filename, date,new_image_string,pixel_count_data)
+        # Retreive the sum of pixel 
+        sum_pixel           = sum(counts) 
+
+        # percentages for each group
+        canopy_percentage   = round((pixel_spread[0]/sum_pixel),2)
+        soil_percentage     = round((pixel_spread[1]/sum_pixel),2)
+        stubble_percentage  = round((pixel_spread[2]/sum_pixel),2)
 
 
-    return img_html_div_constructed
+        pixel_count_data = {
+            'canopy_p':canopy_percentage,
+            'soil_p':soil_percentage,
+            'stubble_p':stubble_percentage
+            }
+
+        # Create an ar
+        img_html_div_constructed = analysed_info_to_html_func(contents, filename, date,new_image_string,pixel_count_data)
+
+
+        return img_html_div_constructed
+
+    except Exception as e:
+        print("Misspelled output name")
+        print("{0}: {1}".format(type(e), e))
+        return "Sorry ! something went wrong"
 
 
 
