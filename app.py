@@ -107,8 +107,8 @@ children=[
         id='model-dropdown',
         options=[
             {'label': 'Simple segnet', 'value': '1'},
-            {'label': 'Unet', 'value': '2'},
-            {'label': 'Arriving soon', 'value': '3'}
+            {'label': 'segnet_512', 'value': '2'},
+            {'label': 'segnet_256', 'value': '3'}
             ],
             value='1',
     )

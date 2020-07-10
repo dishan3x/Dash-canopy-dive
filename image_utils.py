@@ -20,8 +20,8 @@ def analyse_image_func(contents, filename, date,selected_model):
     """
     model_dict = {
         '1':"models/dishan_made_simple_segnet_model.onnx",
-        '2':"models/dishan_segnet_v2.onnx",
-        '3':"soon.onnx"
+        '2':"models/dishan_segnet_v2_512.onnx",
+        '3':"models/dishan_segnet_v2_256.onnx"
     }
     
     # Decoding string base64 into an image
@@ -32,8 +32,11 @@ def analyse_image_func(contents, filename, date,selected_model):
 
     # image should be arrange to the model specification
     size        = 512 # size is changed to 256 becuase the model is larger and could not upload to github
-    
-    # resize the image to to actual size 
+     
+    if selected_model == 3:
+        size = 256
+
+    #  resize the image to to actual size 
     im_resized  = im.resize((size,size))
 
     # Convert numpy array for further calculations
@@ -56,7 +59,6 @@ def analyse_image_func(contents, filename, date,selected_model):
         # Creating the image array 
         rgb_array = np.zeros((size,size,3), 'uint8')
     
-        
         # Choosing class of the highest index 
         # highest probability of each pixel cell 
         highest_probability_index = np.argmax(pred_onx[0][0], axis=0)
@@ -129,8 +131,20 @@ def analyse_image_func(contents, filename, date,selected_model):
     except Exception as e:
         print("Misspelled output name")
         print("{0}: {1}".format(type(e), e))
-        return "Sorry ! something went wrong"
-
+        #return "Sorry ! something went wrong"
+        return dbc.Alert(
+            children =[
+                html.H4("Oops something went wrong!", className="alert-heading"),
+                html.P(
+                    "{0}: {1}".format(type(e), e)
+                ),
+                html.Hr(),
+            ],
+            id="alert-fade",
+            color="danger",
+            dismissable=True,
+            is_open=True,
+        )
 
 
 def analysed_info_to_html_func(contents, filename, date, contructed_image,pixel_count_data):
