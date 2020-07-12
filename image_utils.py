@@ -91,13 +91,26 @@ def analyse_image_func(contents, filename, date,selected_model):
                     rgb_array[x,y,2] = 255
 
 
+        # Convert the resized origianl image to base64
+        # This process is need to keep the steady size of the input
+
+    
+
+        pil_img_original = Image.fromarray(np_img)
+        # using an in-memory bytes buffer
+        buff_original    = BytesIO()
+        
+        pil_img_original.save(buff_original, format="JPEG")
+        original_image_string = base64.b64encode(buff_original.getvalue()).decode("utf-8")
+        original_image_string = "data:image_ol/JPEG;base64,"+original_image_string
 
         # convert RGB array to base64
         pil_img = Image.fromarray(rgb_array)
-        buff    = BytesIO()
-        pil_img.save(buff, format="JPEG")
-        new_image_string = base64.b64encode(buff.getvalue()).decode("utf-8")
-        new_image_string = "data:image/JPEG;base64,"+new_image_string
+        # use and initiate a different buffer for constructed image 
+        buff_constructed    = BytesIO()
+        pil_img.save(buff_constructed, format="JPEG")
+        contructed_image_str = base64.b64encode(buff_constructed.getvalue()).decode("utf-8")
+        contructed_image_str = "data:image/JPEG;base64,"+contructed_image_str
 
 
         # Retrieving pixel count in each groups
@@ -123,7 +136,7 @@ def analyse_image_func(contents, filename, date,selected_model):
             }
 
         # Create an ar
-        img_html_div_constructed = analysed_info_to_html_func(contents, filename, date,new_image_string,pixel_count_data)
+        img_html_div_constructed = analysed_info_to_html_func(original_image_string, filename, date,contructed_image_str,pixel_count_data)
 
 
         return img_html_div_constructed

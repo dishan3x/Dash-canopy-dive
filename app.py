@@ -45,7 +45,19 @@ modal_div_instructions= html.Div(
         dbc.Modal(
             [
                 dbc.ModalHeader("Instructions"),
-                dbc.ModalBody("Instruction are coming soon"),
+                dbc.ModalBody(
+                    children=[
+                        html.H6(children='1 . Select Model'),
+                        html.P(),
+                        html.Hr(),
+                        html.H6(children='2. Upload image'),
+                        html.P(),
+                        html.Hr(),
+                        html.H6(children='3. Download image'),
+                        html.P(),
+                        html.Hr(),
+                    ]
+                ),
                 dbc.ModalFooter(
                     dbc.Button("Close", id="close_modal_btn_in_instructions_modal", className="ml-auto")
                 ),
