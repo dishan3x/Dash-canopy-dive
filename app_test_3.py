@@ -1,59 +1,54 @@
 import dash
 import dash_bootstrap_components as dbc
 import dash_html_components as html
-from dash.dependencies import Input, Output, State
+from dash.dependencies import Input, Output
 
+
+external_stylesheets = [dbc.themes.BOOTSTRAP]
 external_stylesheets = [dbc.themes.COSMO]
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 
-alert = html.Div(
-    [
-        dbc.Button(
-            "Toggle alert with fade", id="alert-toggle-fade", className="mr-1"
-        ),
-        dbc.Button("Toggle alert without fade", id="alert-toggle-no-fade"),
-        html.Hr(),
-        dbc.Alert(
-            "Hello! I am an alert",
-            id="alert-fade",
-            dismissable=True,
-            is_open=True,
-        ),
-        dbc.Alert(
-            "Hello! I am an alert that doesn't fade in or out",
-            id="alert-no-fade",
-            dismissable=True,
-            fade=False,
-            is_open=True,
-        ),
+dropdown = dbc.DropdownMenu(
+    label="Menu",
+    children=[
+        dbc.DropdownMenuItem("Item 1", className = "dropdown-button",key="1"),
+        dbc.DropdownMenuItem("Item 2", className  = "dropdown-button",key="2" ),
+        dbc.DropdownMenuItem("Item 3", className  = "dropdown-button",key="3"),
     ]
 )
 
-app.layout = alert
 
+
+#dropdown =  html.Span(
+#    id="drop-down-div",
+#children=[
+#    html.Span(" Model :  ",id="drop-down-title"),
+#    dcc.Dropdown(
+#        id='model-dropdown',
+#        options=[
+#            {'label': 'Simple segnet', 'value': '1'},
+#            {'label': 'segnet_512', 'value': '2'},
+#            {'label': 'segnet_256', 'value': '3'}
+#            ],
+#            value='1',
+#    )
+#    ]
+#)
+
+
+app.layout =  html.Div([dropdown,html.P(id="item-clicks", className="mt-3")])
 
 @app.callback(
-    Output("alert-fade", "is_open"),
-    [Input("alert-toggle-fade", "n_clicks")],
-    [State("alert-fade", "is_open")],
+    Output("item-clicks", "children"), [Input(component_className="dropdown-button", component_property="key")]
 )
-def toggle_alert(n, is_open):
-    if n:
-        return not is_open
-    return is_open
+def count_clicks(some):
+    print(some)
+    if some:
+        return f"Button clicked {some} times."
+    return "Button not clicked yet."
 
-
-@app.callback(
-    Output("alert-no-fade", "is_open"),
-    [Input("alert-toggle-no-fade", "n_clicks")],
-    [State("alert-no-fade", "is_open")],
-)
-def toggle_alert_no_fade(n, is_open):
-    if n:
-        return not is_open
-    return is_open
 
 
 if __name__ == '__main__':
