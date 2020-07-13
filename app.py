@@ -11,17 +11,21 @@ import base64
 from io import BytesIO,StringIO
 #import plotly.express as px
 import dash_bootstrap_components as dbc
-from image_utils import analyse_image_func
+from utils.image_utils import analyse_image_func
 
 # Select themes
 #external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css','dbc.themes.BOOTSTRAP']
 external_stylesheets = [dbc.themes.BOOTSTRAP]
 external_stylesheets = [dbc.themes.COSMO]
 
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets,meta_tags=[
+        {"name": "viewport", "content": "width=device-width, initial-scale=1"}
+    ])
 
 
 CORA_LOGO  = "assets/logo/logo_1.PNG"
+
+# model divs in navigation bar
 
 modal_div_about_us = html.Div(
     [
@@ -49,13 +53,10 @@ modal_div_instructions= html.Div(
                     children=[
                         html.H6(children='1 . Select Model'),
                         html.P(),
-                        html.Hr(),
                         html.H6(children='2. Upload image'),
                         html.P(),
-                        html.Hr(),
-                        html.H6(children='3. Download image'),
-                        html.P(),
-                        html.Hr(),
+                        html.H6(children='3 . Download image'),
+
                     ]
                 ),
                 dbc.ModalFooter(
@@ -99,17 +100,6 @@ navbar = dbc.Navbar(
     dark=True,
 )
 
-#dropdown = dbc.DropdownMenu(
-#    label="models",
-#    className="select-model",
-#    children=[
-#        dbc.DropdownMenuItem("dishan_segnet_v2"),
-#        dbc.DropdownMenuItem("Item 2"),
-#        dbc.DropdownMenuItem("Item 3"),
-#    ],
-#    id="select-model"
-#)
-#  etc :background-color: #ff7518;
 
 dropdown =  html.Span(
     id="drop-down-div",
@@ -137,13 +127,6 @@ upload_btn =  dcc.Upload(
         # Allow multiple files to be uploaded
         multiple=True
     )
-#subnav_bar = html.Div(
-#    dbc.Row(
-#        id="sub-nav-bar",
-#        children=[dropdown,
-#        upload_btn],
-#    )
-#)
 
 subnav_bar = html.Div(
         id="sub-nav-bar",
@@ -151,6 +134,7 @@ subnav_bar = html.Div(
         upload_btn],
 
 )
+
 body = dbc.Container([
     html.Div(id='output-image-upload'),
 ])

@@ -116,7 +116,7 @@ def analyse_image_func(contents, filename, date,selected_model):
         # Retrieving pixel count in each groups
         # canopy - 0
         # soil   - 1
-        # stubble- 3 
+        # stubble- 2 
         unique_group_name, counts = np.unique(highest_probability_index, return_counts=True)
         pixel_spread = dict(zip(unique_group_name, counts))
 
@@ -225,30 +225,51 @@ def analysed_info_to_html_func(contents, filename, date, contructed_image,pixel_
             dbc.Col
             (
                 html.Div(children=[
-                    html.H6("Canopy"),
-                    html.A(pixel_count_data['canopy_p'],className="result-titles")
+                    dbc.Card([
+                        html.H6("Canopy"),
+                        dbc.CardBody([
+                            html.A(pixel_count_data['canopy_p'],className="result-titles")
+                        ]
+                        ) 
                     ],
-                    className="rounded-circle")
+                    className="percentage-information-cards text-white text-center ",
+                    ),
+                    ],
+                    className="percentage-information-cards-div primary")
             ),
             
             dbc.Col
-            (    
-                html.Div(children=[  
-                    html.H6("Soil"),
-                    html.A(pixel_count_data['soil_p'],className="result-titles")
-                ],
-                className="rounded-circle")
-
+            (
+                html.Div(children=[
+                    dbc.Card([
+                        html.H6("Soil"),
+                        dbc.CardBody([
+                            html.A(pixel_count_data['soil_p'],className="result-titles")
+                        ]
+                        ) 
+                    ],
+                    className="percentage-information-cards text-white text-center",
+                    ),
+                    ],
+                    className="percentage-information-cards-div")
             ),
+            
 
             dbc.Col
             (
                 html.Div(children=[
-                    html.H6("Stubble"),
-                    html.A(pixel_count_data['stubble_p'],className="result-titles")
+                    dbc.Card([
+                        html.H6("Stubble"),
+                        dbc.CardBody([
+                            html.A(pixel_count_data['stubble_p'],className="result-titles")
+                        ]) 
                     ],
-                    className="rounded-circle")
+                    className ="percentage-information-cards  text-white text-center"
+                    ),
+                    ],
+                    className="percentage-information-cards-div")
             ),
+            
 
             ]
             )
@@ -291,9 +312,23 @@ def analysed_info_to_html_func(contents, filename, date, contructed_image,pixel_
     #        )
     #        ])  
 
+    toast = html.Div(
+        [
+            dbc.Toast(
+                [html.P("Image constructed succesfully", className="mb-0")],
+                id="auto-toast",
+                header="Success",
+                duration=1500,
+                style={"position": "fixed","right":50, "top": 480, "width": 200},
+            ),
+        ]
+    )    
+
     returnDiv = html.Div([
-            percentage_circles,
-            images_div,
+        toast,
+        percentage_circles,
+        images_div,
+            
             #download_button,
     ])
     

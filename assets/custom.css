@@ -71,3 +71,11 @@
 .image-container{
     display:grid;
 }
+
+/* information cards in output-image-upload div */
+.percentage-information-cards{
+    background-color:#f5741db5;
+}
+
+
+
