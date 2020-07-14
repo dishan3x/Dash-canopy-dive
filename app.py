@@ -12,6 +12,8 @@ from io import BytesIO,StringIO
 #import plotly.express as px
 import dash_bootstrap_components as dbc
 from utils.image_utils import analyse_image_func
+import os
+
 
 # Select themes
 #external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css','dbc.themes.BOOTSTRAP']
@@ -22,8 +24,10 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets,meta_tags=[
         {"name": "viewport", "content": "width=device-width, initial-scale=1"}
     ])
 
-
+# logo for the app
 CORA_LOGO  = "assets/logo/logo_1.PNG"
+
+
 
 # model divs in navigation bar
 
@@ -150,6 +154,7 @@ app.layout = html.Div([navbar,subnav_bar,body])
     State('upload-image', 'last_modified'),
     State('model-dropdown','value')])
 def update_output(list_of_contents, list_of_names, list_of_dates,model):
+    print("model",model)
     if list_of_contents is not None:
         analysed_information = [
             analyse_image_func(c, n, d, m) for c, n, d, m in
@@ -160,7 +165,8 @@ def update_output(list_of_contents, list_of_names, list_of_dates,model):
 
 
 
-# ********   call back for modal *****************
+# ********   call back for modals *****************
+
 @app.callback(
     Output("modal_about_us", "is_open"),
     [Input("open_modal_btn_in_about_us_modal", "n_clicks"), Input("close_modal_btn_in_about_us_modal", "n_clicks")],
@@ -184,7 +190,7 @@ def toggle_modal(n1, n2, is_open):
 
 
 
-# add callback for toggling the collapse on small screens
+# add callback for toggling the collapse button on small screens
 @app.callback(
     Output("navbar-collapse", "is_open"),
     [Input("navbar-toggler", "n_clicks")],
