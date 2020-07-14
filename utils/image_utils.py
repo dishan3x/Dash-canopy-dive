@@ -21,7 +21,7 @@ def analyse_image_func(contents, filename, date,selected_model):
     model_dict = {
         '1':"models/dishan_made_simple_segnet_model.onnx",
         '2':"models/dishan_segnet_v2_512.onnx",
-        '3':"models/dishan_segnet_v2_256.onnx"
+        '3':"models/test.onnx"
     }
     
     # Decoding string base64 into an image
@@ -49,11 +49,13 @@ def analyse_image_func(contents, filename, date,selected_model):
 
         # Run ONNX runtime
         sess        = rt.InferenceSession(model_dict[selected_model])
+
+        # Retrieving  names of input and output layer of the label
         input_name  = sess.get_inputs()[0].name
-        output_name = sess.get_outputs()[-1].name
+        output_name =sess.get_outputs()[0].name
 
         # Run the input in onnx model
-        pred_onx    = sess.run("",{input_name:floatAstype})
+        pred_onx    = sess.run([output_name],{input_name:floatAstype})
 
 
         # Creating the image array 
@@ -166,56 +168,56 @@ def analysed_info_to_html_func(contents, filename, date, contructed_image,pixel_
     '''
 
     images_div =dbc.Row(
-            [
+        id ="image-container-div",
+        children =[
             #html.H5(filename),
             #html.H6(datetime.datetime.fromtimestamp(date)),
 
             # HTML images accept base64 encoded strings in the same format
             # that is supplied by the upload
             
-            html.Div(
+            dbc.Card(
                 className="image-container",
                 children=[
-                    html.H5("Original image"),
-                    html.Img(id="original-image",src=contents),
+                    dbc.CardImg(id="original-image",src=contents),
+                    #html.H5("Original image"),
                     html.A(
                         id="download-content-original",
                         download="image.png",
                         href = contents,
                         children=[
                             dbc.Button(
-                                "Download image",
+                                "Original image",
                                 id="down-load_button",
                                 color="primary",
                                 className="inline_button",
                                 )
                             ]
-                        )  
+                        )
                 ]
                 ),
 
-            html.Div(
+            dbc.Card(
                 className="image-container",
                 children=[
-                    html.H5("Constructed Image"),
-                    html.Img(id="constructed-image",src=contructed_image),
+                    dbc.CardImg(id="constructed-image",src=contructed_image),
+                    #html.H5("Original image"),
                     html.A(
                         id="download-content-construct",
                         download="image.png",
                         href = contructed_image,
                         children=[
                             dbc.Button(
-                                "Download image",
+                                "Result image",
                                 id="down-load_button",
                                 color="primary",
                                 className="inline_button",
                                 )
-                        ]
-                        ) 
+                            ]
+                        )
                 ]
-                ),
-            
-            ]
+                ),                     
+        ],
         )
     
     
@@ -235,7 +237,8 @@ def analysed_info_to_html_func(contents, filename, date, contructed_image,pixel_
                     className="percentage-information-cards text-white text-center ",
                     ),
                     ],
-                    className="percentage-information-cards-div primary")
+                    className="percentage-information-cards-div primary"),
+                    sm=4
             ),
             
             dbc.Col
@@ -251,7 +254,8 @@ def analysed_info_to_html_func(contents, filename, date, contructed_image,pixel_
                     className="percentage-information-cards text-white text-center",
                     ),
                     ],
-                    className="percentage-information-cards-div")
+                    className="percentage-information-cards-div"),
+                    sm=4
             ),
             
 
@@ -267,7 +271,8 @@ def analysed_info_to_html_func(contents, filename, date, contructed_image,pixel_
                     className ="percentage-information-cards  text-white text-center"
                     ),
                     ],
-                    className="percentage-information-cards-div")
+                    className="percentage-information-cards-div"),
+                    sm=4
             ),
             
 

@@ -3,7 +3,8 @@
 }
 
 #output-image-upload{
-    display:inline;
+    /* display:inline; */
+    padding-top: 1.5%
 }
 
 #percentage_table{
@@ -73,8 +74,22 @@
 }
 
 /* information cards in output-image-upload div */
+
+#image-container-div{
+    padding-top:2.5%;
+    padding-left:2%;
+}
+
+.image-container{
+    margin:5px;
+}
 .percentage-information-cards{
     background-color:#f5741db5;
+}
+
+/* small devices */
+@media ( max-width: 600px) {
+
 }
 
 

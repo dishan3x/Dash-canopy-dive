@@ -112,9 +112,9 @@ children=[
     dcc.Dropdown(
         id='model-dropdown',
         options=[
-            {'label': 'Simple segnet', 'value': '1'},
-            {'label': 'segnet_512', 'value': '2'},
-            {'label': 'segnet_256', 'value': '3'}
+            {'label': 'Segnet', 'value': '1'},
+            {'label': 'change to ', 'value': '2'},
+            {'label': 'segnet_mohomad', 'value': '3'}
             ],
             value='1',
     )
