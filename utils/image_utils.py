@@ -33,8 +33,6 @@ def analyse_image_func(contents, filename, date,selected_model):
     # image should be arrange to the model specification
     size        = 512 # size is changed to 256 becuase the model is larger and could not upload to github
      
-    if selected_model == 3:
-        size = 256
 
     #  resize the image to to actual size 
     im_resized  = im.resize((size,size))
@@ -228,7 +226,7 @@ def analysed_info_to_html_func(contents, filename, date, contructed_image,pixel_
             (
                 html.Div(children=[
                     dbc.Card([
-                        html.H6("Canopy"),
+                        html.H6("Canopy",className="percentage-information-cards_title"),
                         dbc.CardBody([
                             html.A(pixel_count_data['canopy_p'],className="result-titles")
                         ]
@@ -245,7 +243,7 @@ def analysed_info_to_html_func(contents, filename, date, contructed_image,pixel_
             (
                 html.Div(children=[
                     dbc.Card([
-                        html.H6("Soil"),
+                        html.H6("Soil",className="percentage-information-cards_title"),
                         dbc.CardBody([
                             html.A(pixel_count_data['soil_p'],className="result-titles")
                         ]
@@ -263,7 +261,7 @@ def analysed_info_to_html_func(contents, filename, date, contructed_image,pixel_
             (
                 html.Div(children=[
                     dbc.Card([
-                        html.H6("Stubble"),
+                        html.H6("Stubble",className="percentage-information-cards_title"),
                         dbc.CardBody([
                             html.A(pixel_count_data['stubble_p'],className="result-titles")
                         ]) 
@@ -279,52 +277,16 @@ def analysed_info_to_html_func(contents, filename, date, contructed_image,pixel_
             ]
             )
 
-       
-    # creating table for the percentage values
-    table_header = [
-        html.Thead(html.Tr([html.Th("Type"), html.Th("Percentage")]))
-    ]
-
-    row1 = html.Tr([html.Td("Canopy"), html.Td(pixel_count_data['canopy_p'])])
-    row2 = html.Tr([html.Td("Soil"), html.Td(pixel_count_data['soil_p'])])
-    row3 = html.Tr([html.Td("Stubble"), html.Td(pixel_count_data['stubble_p'])])
- 
-
-    table_body = [html.Tbody([row1, row2, row3])]
-
-  
-    table = dbc.Table(
-        # using the same table as in the above example
-        table_header + table_body,
-        id ="percentage_table",
-        bordered=True,
-        #dark=True,
-        hover=True,
-        responsive=True,
-        striped=True,
-    )
-
-    #download_button = html.A(
-    #        id="download-content",
-    #        download="image.png",
-    #        href = contructed_image,
-    #        children=[
-    #        dbc.Button(
-    #            "Download image",
-    #            id="down-load_button",
-    #            color="primary",
-    #            className="inline_button",
-    #        )
-    #        ])  
-
+    # Toast button to show the image process has been complete
     toast = html.Div(
         [
             dbc.Toast(
-                [html.P("Image constructed succesfully", className="mb-0")],
-                id="auto-toast",
+                [html.P("Image constructed.", className="mb-0")],
+                id="complete-toast",
                 header="Success",
-                duration=1500,
-                style={"position": "fixed","right":50, "top": 480, "width": 200},
+                duration=2000,
+                icon ="success",
+                style={"position": "fixed", "top": 66, "right": 10, "width": 250},
             ),
         ]
     )    
@@ -333,8 +295,6 @@ def analysed_info_to_html_func(contents, filename, date, contructed_image,pixel_
         toast,
         percentage_circles,
         images_div,
-            
-            #download_button,
     ])
     
 

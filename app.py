@@ -6,13 +6,10 @@ import dash_html_components as html
 import numpy as np
 import onnxruntime as rt
 from PIL import Image
-#from skimage import io
 import base64
 from io import BytesIO,StringIO
-#import plotly.express as px
 import dash_bootstrap_components as dbc
 from utils.image_utils import analyse_image_func
-import os
 
 
 # Select themes
@@ -28,18 +25,20 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets,meta_tags=[
 CORA_LOGO  = "assets/logo/logo_1.PNG"
 
 
+##########   Nav bar   ######################
 
-# model divs in navigation bar
+# model component
 
-modal_div_about_us = html.Div(
+# Developer infromations modal
+modal_div_developer_info = html.Div(
     [
-        dbc.Button("About us", id="open_modal_btn_in_about_us_modal"),
+        dbc.Button("About us", id="open-modal-btn-in-about-us-modal"),
         dbc.Modal(
             [
                 dbc.ModalHeader("About us"),
                 dbc.ModalBody("This app was developed by the programmers"),
                 dbc.ModalFooter(
-                    dbc.Button("Close", id="close_modal_btn_in_about_us_modal", className="ml-auto")
+                    dbc.Button("Close", id="close-modal-btn-in-about-us-modal", className="ml-auto")
                 ),
             ],
             id="modal_about_us",
@@ -47,9 +46,10 @@ modal_div_about_us = html.Div(
     ]
 )
 
+# Instruction model
 modal_div_instructions= html.Div(
     [
-        dbc.Button("Instructions", id="open_modal_btn_in_instructions_modal"),
+        dbc.Button("Instructions", id="open-modal-btn-in-instructions-modal"),
         dbc.Modal(
             [
                 dbc.ModalHeader("Instructions"),
@@ -72,10 +72,10 @@ modal_div_instructions= html.Div(
     ]
 ) 
 
-
+# Nav items component
 nav_items = dbc.Row(
     [
-        dbc.Col(modal_div_about_us),
+        dbc.Col(modal_div_developer_info),
         dbc.Col(modal_div_instructions),
     ],
     no_gutters=True,
@@ -83,6 +83,7 @@ nav_items = dbc.Row(
     align="center",
 )
 
+# Create nav bar 
 navbar = dbc.Navbar(
     [
         html.A(
@@ -104,7 +105,9 @@ navbar = dbc.Navbar(
     dark=True,
 )
 
+# Develop sub nav bar ###############################
 
+# Deep learning model select drop down component
 dropdown =  html.Span(
     id="drop-down-div",
 children=[
@@ -121,6 +124,7 @@ children=[
     ]
 )
 
+# upload image button component
 upload_btn =  dcc.Upload(
         id='upload-image',
         children=html.Div([
@@ -132,6 +136,7 @@ upload_btn =  dcc.Upload(
         multiple=True
     )
 
+# Create the sub nav bar
 subnav_bar = html.Div(
         id="sub-nav-bar",
         children=[dropdown,
@@ -139,14 +144,18 @@ subnav_bar = html.Div(
 
 )
 
+# Body container component  ###########################
 body = dbc.Container([
     html.Div(id='output-image-upload'),
 ])
 
-# Collecting all components
+
+# Collecting all components for app layout ##########
 app.layout = html.Div([navbar,subnav_bar,body])
 
-    
+
+# Call backs ###################################### 
+
 # call back for upload input 
 @app.callback(Output(component_id='output-image-upload',component_property='children'),
     [Input(component_id='upload-image', component_property= 'contents')],
@@ -154,7 +163,6 @@ app.layout = html.Div([navbar,subnav_bar,body])
     State('upload-image', 'last_modified'),
     State('model-dropdown','value')])
 def update_output(list_of_contents, list_of_names, list_of_dates,model):
-    print("model",model)
     if list_of_contents is not None:
         analysed_information = [
             analyse_image_func(c, n, d, m) for c, n, d, m in
@@ -165,32 +173,32 @@ def update_output(list_of_contents, list_of_names, list_of_dates,model):
 
 
 
-# ********   call back for modals *****************
+# Call back for modals ###########################
 
 @app.callback(
     Output("modal_about_us", "is_open"),
-    [Input("open_modal_btn_in_about_us_modal", "n_clicks"), Input("close_modal_btn_in_about_us_modal", "n_clicks")],
+    [Input("open-modal-btn-in-about-us-modal", "n_clicks"), Input("close-modal-btn-in-about-us-modal", "n_clicks")],
     [State("modal_about_us", "is_open")],
 )
-def toggle_modal(n1, n2, is_open):
-    if n1 or n2:
+def toggle_modal(open_btn, close_btn, is_open):
+    if open_btn or close_btn:
         return not is_open
     return is_open
 
 @app.callback(
     Output("modal_instructions", "is_open"),
-    [Input("open_modal_btn_in_instructions_modal", "n_clicks"), Input("close_modal_btn_in_instructions_modal", "n_clicks")],
+    [Input("open-modal-btn-in-instructions-modal", "n_clicks"), Input("close_modal_btn_in_instructions_modal", "n_clicks")],
     [State("modal_instructions", "is_open")],
 )
-def toggle_modal(n1, n2, is_open):
-    if n1 or n2:
+def toggle_modal(open_btn, close_btn, is_open):
+    if open_btn or close_btn:
         return not is_open
     return is_open
 
 
 
+# callback for toggling the collapse button on small screens ############
 
-# add callback for toggling the collapse button on small screens
 @app.callback(
     Output("navbar-collapse", "is_open"),
     [Input("navbar-toggler", "n_clicks")],
