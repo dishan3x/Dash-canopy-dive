@@ -181,7 +181,7 @@ def analysed_info_to_html_func(contents, filename, date, contructed_image,pixel_
                     #html.H5("Original image"),
                     html.A(
                         id="download-content-original",
-                        download="image.png",
+                        download=str(datetime.datetime.fromtimestamp(date))+"_original.png",
                         href = contents,
                         children=[
                             dbc.Button(
@@ -202,7 +202,7 @@ def analysed_info_to_html_func(contents, filename, date, contructed_image,pixel_
                     #html.H5("Original image"),
                     html.A(
                         id="download-content-construct",
-                        download="image.png",
+                        download=str(datetime.datetime.fromtimestamp(date))+"_result.png",
                         href = contructed_image,
                         children=[
                             dbc.Button(
