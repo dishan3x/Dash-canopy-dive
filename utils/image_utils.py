@@ -18,9 +18,10 @@ def analyse_image_func(contents, filename, date,selected_model):
         and return the prediction relating to the classes
         provided from the model. 
     """
+    #'2':"models/dishan_segnet_v2_512.onnx",
     model_dict = {
         '1':"models/dishan_made_simple_segnet_model.onnx",
-        '2':"models/dishan_segnet_v2_512.onnx",
+        '2':"models/dishan_made_unet_model.onnx",
         '3':"models/test.onnx"
     }
     

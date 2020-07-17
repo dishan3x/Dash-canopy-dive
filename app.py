@@ -57,7 +57,7 @@ modal_div_instructions= html.Div(
                     children=[
                         html.H6(children='1 . Select Model'),
                         html.P(),
-                        html.H6(children='2. Upload image'),
+                        html.H6(children='2 . Upload image'),
                         html.P(),
                         html.H6(children='3 . Download image'),
 
@@ -116,7 +116,7 @@ children=[
         id='model-dropdown',
         options=[
             {'label': 'Segnet', 'value': '1'},
-            {'label': 'change to ', 'value': '2'},
+            {'label': 'Unet', 'value': '2'},
             {'label': 'segnet_mohomad', 'value': '3'}
             ],
             value='1',
