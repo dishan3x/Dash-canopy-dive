@@ -83,34 +83,14 @@ nav_items = dbc.Row(
     align="center",
 )
 
-# Create nav bar 
-navbar = dbc.Navbar(
-    [
-        html.A(
-            # Use row and col to control vertical alignment of logo / brand
-            dbc.Row(
-                [
-                    dbc.Col(html.Img(id="logo_img",src=CORA_LOGO, height="30px")),
-                    dbc.Col(dbc.NavbarBrand("Cora", className="ml-2")),
-                ],
-                align="center",
-                no_gutters=True,
-            ),
-            href="https://github.com/dishan3x/Dash-canopy-dive",
-        ),
-        dbc.NavbarToggler(id="navbar-toggler"),
-        dbc.Collapse(nav_items, id="navbar-collapse", navbar=True),
-    ],
-    color="dark",
-    dark=True,
-)
 
 # Develop sub nav bar ###############################
 
 # Deep learning model select drop down component
 dropdown =  html.Span(
+
     id="drop-down-div",
-children=[
+    children=[
     html.Span(" Model :  ",id="drop-down-title"),
     dcc.Dropdown(
         id='model-dropdown',
@@ -136,13 +116,37 @@ upload_btn =  dcc.Upload(
         multiple=True
     )
 
-# Create the sub nav bar
-subnav_bar = html.Div(
-        id="sub-nav-bar",
-        children=[dropdown,
-        upload_btn],
-
+# Create nav bar 
+navbar = dbc.Navbar(
+    [
+        html.A(
+            # Use row and col to control vertical alignment of logo / brand
+            dbc.Row(
+                [
+                    dbc.Col(html.Img(id="logo_img",src=CORA_LOGO, height="30px")),
+                    dbc.Col(dbc.NavbarBrand("Cora", className="ml-2")),
+                ],
+                align="center",
+                no_gutters=True,
+            ),
+            href="https://github.com/dishan3x/Dash-canopy-dive",
+        ),
+        dropdown,
+        upload_btn,
+        dbc.NavbarToggler(id="navbar-toggler"),
+        dbc.Collapse(nav_items, id="navbar-collapse", navbar=True),
+    ],
+    color="dark",
+    dark=True,
 )
+
+# Create the sub nav bar
+#subnav_bar = html.Div(
+#        id="sub-nav-bar",
+#        children=[dropdown,
+#        upload_btn],
+
+#)
 
 # Body container component  ###########################
 body = dbc.Container([
@@ -151,7 +155,7 @@ body = dbc.Container([
 
 
 # Collecting all components for app layout ##########
-app.layout = html.Div([navbar,subnav_bar,body])
+app.layout = html.Div([navbar,body])
 
 
 # Call backs ###################################### 
