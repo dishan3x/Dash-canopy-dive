@@ -40,11 +40,13 @@ def analyse_image_func(contents, filename, date,selected_model):
 
     # Convert numpy array for further calculations
     np_img = np.array(im_resized)
+
+    kol = np.transpose(np_img,(2, 1, 0))
     
     try:
         # reshape input
-        np_reshape  = np.reshape(np_img,(1, 3, size, size))
-        floatAstype = np.float32(np_reshape)
+        #np_reshape  = np.reshape(np_img,(1, 3, size, size))
+        floatAstype = np.float32(kol)
 
         # Run ONNX runtime
         sess        = rt.InferenceSession(model_dict[selected_model])
@@ -54,7 +56,7 @@ def analyse_image_func(contents, filename, date,selected_model):
         output_name =sess.get_outputs()[0].name
 
         # Run the input in onnx model
-        pred_onx    = sess.run([output_name],{input_name:floatAstype})
+        pred_onx    = sess.run([output_name],{input_name:np.expand_dims(floatAstype, 0)})
 
 
         # Creating the image array 
@@ -106,10 +108,17 @@ def analyse_image_func(contents, filename, date,selected_model):
         original_image_string = "data:image_ol/JPEG;base64,"+original_image_string
 
         # convert RGB array to base64
+        # Transpose RGB array 
+        
         pil_img = Image.fromarray(rgb_array)
+        #rgb_transpose = pil_img.transpose(Image.ROTATE_45)
+        rgb_transpose = pil_img.transpose(Image.TRANSPOSE)
+
+        #(background, overlay, 0.5)
+        blend = Image.blend(pil_img_original, rgb_transpose, 0.5)
         # use and initiate a different buffer for constructed image 
         buff_constructed    = BytesIO()
-        pil_img.save(buff_constructed, format="JPEG")
+        blend.save(buff_constructed, format="JPEG")
         contructed_image_str = base64.b64encode(buff_constructed.getvalue()).decode("utf-8")
         contructed_image_str = "data:image/JPEG;base64,"+contructed_image_str
 
