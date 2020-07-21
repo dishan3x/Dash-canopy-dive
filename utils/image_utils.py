@@ -233,7 +233,7 @@ def analysed_info_to_html_func(contents, filename, date, contructed_image,pixel_
                         ]
                         ) 
                     ],
-                    className="percentage-information-cards text-white text-center ",
+                    className="percentage-information-cards  text-center ",
                     ),
                     ],
                     className="percentage-information-cards-div primary"),
@@ -250,7 +250,7 @@ def analysed_info_to_html_func(contents, filename, date, contructed_image,pixel_
                         ]
                         ) 
                     ],
-                    className="percentage-information-cards text-white text-center",
+                    className="percentage-information-cards text-center",
                     ),
                     ],
                     className="percentage-information-cards-div"),
@@ -267,7 +267,7 @@ def analysed_info_to_html_func(contents, filename, date, contructed_image,pixel_
                             html.A(pixel_count_data['stubble_p'],className="result-titles")
                         ]) 
                     ],
-                    className ="percentage-information-cards  text-white text-center"
+                    className ="percentage-information-cardsS text-center"
                     ),
                     ],
                     className="percentage-information-cards-div"),
