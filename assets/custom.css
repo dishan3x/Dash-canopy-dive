@@ -4,7 +4,7 @@
 
 #output-image-upload{
     /* display:inline; */
-    padding-top: 1.5%
+    /* padding-top: 1.5% */
 }
 
 #percentage_table{
@@ -41,6 +41,7 @@
     width:50%;
     padding: 1%;
     font-size: medium;
+    display: none;
 }
 
 #logo_img{
@@ -109,12 +110,16 @@
 
 /* small devices */
 @media ( max-width: 600px) {
-    #model-dropdown {
-        width:100%;
+
+    #model-dropdown, #drop-down-div{
+        /* width:100%; */
+        display:none;
+        width: 0%;
     }   
     
     #drop-down-title {
         display:none;
+        width: 0%;
     }   
 
     .card{
@@ -124,6 +129,10 @@
     .result-titles{ 
         font-size:calc(50px + 5vw);
         text-align: center;
+    }
+
+    #navbar-toggler{
+        float: right;
     }
 
 }
