@@ -236,9 +236,26 @@ def analysed_info_to_html_func(contents, filename, date, contructed_image,pixel_
             (
                 html.Div(children=[
                     dbc.Card([
-                        html.H6("Canopy",className="percentage-information-cards_title"),
                         dbc.CardBody([
+                            html.P("Canopy cover %",className="percentage-information-cards_title"),
                             html.A(pixel_count_data['canopy_p'],className="result-titles")
+                        ]
+                        ) 
+                    ],
+                    className="percentage-information-cards  text-center ",
+                    ),
+                    ],
+                    className="percentage-information-cards-div primary"),
+                    sm=4
+            ),
+
+            dbc.Col
+            (
+                html.Div(children=[
+                    dbc.Card([
+                        dbc.CardBody([
+                            html.P("Soil cover %",className="percentage-information-cards_title"),
+                            html.A(pixel_count_data['soil_p'],className="result-titles")
                         ]
                         ) 
                     ],
@@ -253,30 +270,12 @@ def analysed_info_to_html_func(contents, filename, date, contructed_image,pixel_
             (
                 html.Div(children=[
                     dbc.Card([
-                        html.H6("Soil",className="percentage-information-cards_title"),
                         dbc.CardBody([
-                            html.A(pixel_count_data['soil_p'],className="result-titles")
-                        ]
-                        ) 
-                    ],
-                    className="percentage-information-cards text-center",
-                    ),
-                    ],
-                    className="percentage-information-cards-div"),
-                    sm=4
-            ),
-            
-
-            dbc.Col
-            (
-                html.Div(children=[
-                    dbc.Card([
-                        html.H6("Stubble",className="percentage-information-cards_title"),
-                        dbc.CardBody([
+                            html.P("Residue Cover %",className="percentage-information-cards_title"),
                             html.A(pixel_count_data['stubble_p'],className="result-titles")
                         ]) 
                     ],
-                    className ="percentage-information-cardsS text-center"
+                    className ="percentage-information-cards text-center"
                     ),
                     ],
                     className="percentage-information-cards-div"),

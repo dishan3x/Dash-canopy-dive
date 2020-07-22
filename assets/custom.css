@@ -16,7 +16,6 @@
 }
 
 #upload-image{
-    margin-top: 1%;
     float:right;
 }
 
@@ -89,12 +88,14 @@
 .percentage-information-cards{
     /* background-color:#f5741db5 ;*/
    /*  background-color:#ff670075;  */
+   border :none;
 }
 
 
 .result-titles{ 
-    font-size:5vw;
+    font-size:calc(50px + 5vw);
     text-align: center;
+    color: tomato !important;
 
   }
 
@@ -120,10 +121,10 @@
         margin: 0.1rem 0rem 0.1rem 0rem !important;
       }
     
-      .result-titles{ 
-        font-size:15vw;
+    .result-titles{ 
+        font-size:calc(50px + 5vw);
         text-align: center;
-      }
+    }
 
 }
 
