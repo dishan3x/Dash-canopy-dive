@@ -135,8 +135,8 @@ def analyse_image_func(contents, filename, date,selected_model):
 
         # percentages for each group
         canopy_percentage   = round((pixel_spread[0]/sum_pixel),2)
-        soil_percentage     = round((pixel_spread[1]/sum_pixel),2)
-        stubble_percentage  = round((pixel_spread[2]/sum_pixel),2)
+        stubble_percentage  = round((pixel_spread[1]/sum_pixel),2)
+        soil_percentage     = round((pixel_spread[2]/sum_pixel),2)
 
 
         pixel_count_data = {
@@ -254,8 +254,8 @@ def analysed_info_to_html_func(contents, filename, date, contructed_image,pixel_
                 html.Div(children=[
                     dbc.Card([
                         dbc.CardBody([
-                            html.P("Soil cover %",className="percentage-information-cards_title"),
-                            html.A(pixel_count_data['soil_p'],className="result-titles")
+                            html.P("Residue cover %",className="percentage-information-cards_title"),
+                            html.A(pixel_count_data['stubble_p'],className="result-titles")
                         ]
                         ) 
                     ],
@@ -271,8 +271,8 @@ def analysed_info_to_html_func(contents, filename, date, contructed_image,pixel_
                 html.Div(children=[
                     dbc.Card([
                         dbc.CardBody([
-                            html.P("Residue Cover %",className="percentage-information-cards_title"),
-                            html.A(pixel_count_data['stubble_p'],className="result-titles")
+                            html.P("Soil Cover %",className="percentage-information-cards_title"),
+                            html.A(pixel_count_data['soil_p'],className="result-titles")
                         ]) 
                     ],
                     className ="percentage-information-cards text-center"
