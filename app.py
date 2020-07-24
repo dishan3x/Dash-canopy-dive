@@ -10,6 +10,7 @@ import base64
 from io import BytesIO,StringIO
 import dash_bootstrap_components as dbc
 from utils.image_utils import analyse_image_func
+from utils.app_models import app_information,app_instructions
 
 
 # Select themes
@@ -30,47 +31,10 @@ CORA_LOGO  = "assets/logo/logo_1.PNG"
 # model component
 
 # Developer infromations modal
-modal_div_developer_info = html.Div(
-    [
-        dbc.Button("About us", id="open-modal-btn-in-about-us-modal"),
-        dbc.Modal(
-            [
-                dbc.ModalHeader("About us"),
-                dbc.ModalBody("This app was developed by the programmers"),
-                dbc.ModalFooter(
-                    dbc.Button("Close", id="close-modal-btn-in-about-us-modal", className="ml-auto")
-                ),
-            ],
-            id="modal_about_us",
-        ),
-    ]
-)
+modal_div_developer_info = app_information()
 
 # Instruction model
-modal_div_instructions= html.Div(
-    [
-        dbc.Button("Instructions", id="open-modal-btn-in-instructions-modal"),
-        dbc.Modal(
-            [
-                dbc.ModalHeader("Instructions"),
-                dbc.ModalBody(
-                    children=[
-                        html.H6(children='1 . Select Model'),
-                        html.P(),
-                        html.H6(children='2 . Upload image'),
-                        html.P(),
-                        html.H6(children='3 . Download image'),
-
-                    ]
-                ),
-                dbc.ModalFooter(
-                    dbc.Button("Close", id="close_modal_btn_in_instructions_modal", className="ml-auto")
-                ),
-            ],
-            id="modal_instructions",
-        ),
-    ]
-) 
+modal_div_instructions  = app_instructions()
 
 # Nav items component
 nav_items = dbc.Row(
