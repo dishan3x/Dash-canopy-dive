@@ -41,24 +41,24 @@ def app_instructions():
             [
                 dbc.ModalHeader("Instructions"),
                 dbc.ModalBody([
-                        html.H6(children='1 . Take an image'),
-                        html.A([
+                        html.H5('1 . Take an image',className='instruction-list-header'),
+                        html.Div([
                         html.Li("Stand on soil where you need to calculate soil cover."),
                         html.Li("Open the cora app and click on Upload image button open the camera"),
                         html.Li("Hold the mobile camera 5m above ground."),
                         html.Li("Capture image"),
-                        ]),
+                        ],className="instruction-sublist"),
                         html.Br(),
-                        html.H6(children='2 . Analysed image'),
-                        html.A([
+                        html.H5(children='2 . Analysed image',className='instruction_list_header'),
+                        html.Div([
                         html.Li("Calculated the soil cover percentages will show on top of the application."),
                         html.Li("Application will be using color schemes view analysed images."),
-                        ]),
+                        ],className="instruction-sublist"),
                         html.Br(),
-                        html.H6(children='3 . Download image'),
-                        html.A([
+                        html.H5(children='3 . Download image',className='instruction_list_header'),
+                        html.Div([
                         html.Li("Click on the download button to download the images."),
-                        ]),
+                        ],className="instruction-sublist"),
                                                 html.Br(),
                     ]
                 ),

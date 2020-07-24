@@ -237,7 +237,7 @@ def analysed_info_to_html_func(contents, filename, date, contructed_image,pixel_
                 html.Div(children=[
                     dbc.Card([
                         dbc.CardBody([
-                            html.P("Canopy cover %",className="percentage-information-cards_title"),
+                            html.P("Canopy cover %",id="canopy-title",className="percentage-information-cards_title"),
                             html.A(pixel_count_data['canopy_p'],className="result-titles")
                         ]
                         ) 
@@ -254,7 +254,7 @@ def analysed_info_to_html_func(contents, filename, date, contructed_image,pixel_
                 html.Div(children=[
                     dbc.Card([
                         dbc.CardBody([
-                            html.P("Residue cover %",className="percentage-information-cards_title"),
+                            html.P("Residue cover %",id="residue-title",className="percentage-information-cards_title"),
                             html.A(pixel_count_data['stubble_p'],className="result-titles")
                         ]
                         ) 
@@ -271,7 +271,7 @@ def analysed_info_to_html_func(contents, filename, date, contructed_image,pixel_
                 html.Div(children=[
                     dbc.Card([
                         dbc.CardBody([
-                            html.P("Soil Cover %",className="percentage-information-cards_title"),
+                            html.P("Soil Cover %",id="soil-title",className="percentage-information-cards_title"),
                             html.A(pixel_count_data['soil_p'],className="result-titles")
                         ]) 
                     ],

@@ -69,7 +69,7 @@
 }
 
 .result-titles{
-    font-size: 200%;
+    font-size: calc(10px + 5vw);
 }
 
 .image-container{
@@ -79,7 +79,6 @@
 /* information cards in output-image-upload div */
 
 #image-container-div{
-    padding-top:2.5%;
     padding-left:2%;
 }
 
@@ -97,7 +96,7 @@
     font-size:calc(50px + 5vw);
     text-align: center;
     color: tomato !important;
-
+    line-height: 0.7;
   }
 
 
@@ -111,6 +110,32 @@
     background-color: #FF7518;
     color: white;
   }
+
+.instruction-sublist{
+    margin-left:30px;
+}
+
+#canopy-title{
+    border-left:5px;
+    border-left-style:solid; 
+    border-color:green; 
+    /* padding: 1em; */
+}
+
+#residue-title{
+    border-left:5px;
+    border-left-style:solid; 
+    border-left-width: 10%;
+    border-color:brown; 
+    /* padding: 1em; */
+}
+
+#soil-title{
+    border-left:5px;
+    border-left-style:solid; 
+    border-color:blue; 
+    /* padding: 1em; */
+}
 /* small devices */
 @media ( max-width: 600px) {
 
