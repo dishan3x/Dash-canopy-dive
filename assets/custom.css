@@ -107,7 +107,10 @@
     padding-top: 5px;
 }
 
-
+.modal-header {
+    background-color: #FF7518;
+    color: white;
+  }
 /* small devices */
 @media ( max-width: 600px) {
 
@@ -134,6 +137,8 @@
     #navbar-toggler{
         float: right;
     }
+
+    
 
 }
 
