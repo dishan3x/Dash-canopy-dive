@@ -16,10 +16,10 @@ def app_information():
                     html.Br(),html.Br(),
                     "Identify the residue cover in the soil has higher importance. There percentages of soil cover that maintain throughout farming process. Moreover it also useful research purposes.",
                     html.Br(),html.Br(),
-                    "Technology improvement has been a major impact in many fields. We uses a latest computer models to analyse the image data.Our effort is to minimize and save the time and energy in calculating soil cover. "
-                    "Hope you will our our useful.",
+                    "Technology improvement world has have major impact in many fields. We uses a latest computer models to analyse the image data. Our effort is to minimize and save the time and energy in calculating soil cover. "
+                    "Hope this app will make your life easier.",
                     html.Br(),html.Br(),
-                    "References",
+                    #"References",
                     html.Br(),html.Br(), 
                     ]),
                 ]   
@@ -44,15 +44,15 @@ def app_instructions():
                         html.H5('1 . Take an image',className='instruction-list-header'),
                         html.Div([
                         html.Li("Stand on soil where you need to calculate soil cover."),
-                        html.Li("Open the cora app and click on Upload image button open the camera"),
-                        html.Li("Hold the mobile camera 5m above ground."),
+                        html.Li("Open the cora app and click on upload image button to open the camera"),
+                        html.Li("Hold the mobile camera 5m above ground level."),
                         html.Li("Capture image"),
                         ],className="instruction-sublist"),
                         html.Br(),
                         html.H5(children='2 . Analysed image',className='instruction_list_header'),
                         html.Div([
                         html.Li("Calculated the soil cover percentages will show on top of the application."),
-                        html.Li("Application will be using color schemes view analysed images."),
+                        html.Li("Application will be using color schemes to visualized the analysed data."),
                         ],className="instruction-sublist"),
                         html.Br(),
                         html.H5(children='3 . Download image',className='instruction_list_header'),
