@@ -11,6 +11,7 @@ from io import BytesIO,StringIO
 import dash_bootstrap_components as dbc
 from utils.image_utils import analyse_image_func
 from utils.app_models import app_information,app_instructions
+import time
 
 
 # Select themes
@@ -137,9 +138,11 @@ def update_output(list_of_contents, list_of_names, list_of_dates,model):
             zip(list_of_contents, list_of_names, list_of_dates,model)]
         return analysed_information
     else:
+        time.sleep(3),
+        loading_spinner = html.Div([
+            dbc.Spinner(html.Div(id="loading-output")),
+            ])
         return '' # Place holder for the call back
-
-
 
 # Call back for modals ###########################
 
