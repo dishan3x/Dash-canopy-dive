@@ -17,6 +17,8 @@ requirment file will be added in near future.
 
 Residue quantifying and analysis application program based on deep neural network models 
 
+# Why is this important ? 
+
 This research is based on quantifying the soil residue, soil, and canopy by processing/analyzing image data.  Deep learning is a modern technique in image processing and data analysis which produced promising results that help in many fields.  This application uses a deep learning method called semantic segmentation, to analyze the pixel data in an image.  This process identifies residue in an image and calculates the percentage of each category based on the pixel.   
 
 Solid residues are stems and stalks that remain on soil from previous crops. Residue cover is utilized in farming techniques such as no-till farming. This farming technique uses residue as a cover to the soil layer.  It acts as a barrier to the soil by deflecting energy from the raindrops that can wash away the soil particles and the nutrients in the soil.[1].  
@@ -29,27 +31,18 @@ There are many ways that agronomists calculate the residue on soil. Here are a f
 
 Used in counting soil residue. 
 
-Line transect 
+1.Line transect 
 
 Line transect is a method that uses every 50 – 100-foot tape and counts the residue particles intersect with tape across the sample area on the field. Method counts the number of times the residue intersects with tape for each 1-foot interval. The same counting process is repeated having consistent jumps around a sample area and get the cumulative occurrence as a percentage of the canopy in the area. [3] 
-
  
-
-Meter stick  
+2.Meter stick  
 
 This method takes measurements by throwing a stick into the air and calculating the stick randomly and taking the measurements where it lands and counts residue occurrences alone the stick. 
 
- 
-
-Photo comparison  
+3. Photo comparison  
 In the photo comparison method, they use images predefined residue percentages which already observed and do a comparison between the soil residue and the eye 
 
  
-
- 
-
- 
-
 Research shows that after cultivating crops the acceptance level for residue level should be maintained around 30 percent [2]. Therefore, there is a necessity for the accuracy of reading the residue cover. 
 
 For example, line transect uses 5 measurements in one sample area and can achieve accuracy of (+) or (-) 15 percent of the mean, and the three measurements will be accounted for accuracy of (+) or (-) 32 percent of the mean. This indicates that to get more accuracy it would need a large number of reading from one sample range. This could be a hard process and time-consuming process to achieve higher accuracy.[4] 
@@ -57,8 +50,6 @@ For example, line transect uses 5 measurements in one sample area and can achiev
  
 
 The purpose of developing this program application is to improve user efficiency to calculate the residue percentage. It can distinguish the difference between stubble and the color difference just by using one image. It will have the ability to identify the different shapes of residue on the ground which vary from properties such as color and shape.  
-
- 
 
 References  
 
