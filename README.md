@@ -31,16 +31,14 @@ There are many ways that agronomists calculate the residue on soil. Here are a f
 
 Used in counting soil residue. 
 
-1.Line transect 
-
-Line transect is a method that uses every 50 – 100-foot tape and counts the residue particles intersect with tape across the sample area on the field. Method counts the number of times the residue intersects with tape for each 1-foot interval. The same counting process is repeated having consistent jumps around a sample area and get the cumulative occurrence as a percentage of the canopy in the area. [3] 
+1. Line transect 
+ Line transect is a method that uses every 50 – 100-foot tape and counts the residue particles intersect with tape across the sample area on the field. Method counts the number of times the residue intersects with tape for each 1-foot interval. The same counting process is repeated having consistent jumps around a sample area and get the cumulative occurrence as a percentage of the canopy in the area. [3] 
  
-2.Meter stick  
-
-This method takes measurements by throwing a stick into the air and calculating the stick randomly and taking the measurements where it lands and counts residue occurrences alone the stick. 
+2. Meter stick  
+This method takes measurements by throwing a stick into the air and calculating the stick randomly and taking the measurements where it lands and counts residue occurrences alone the stick.
 
 3. Photo comparison  
-In the photo comparison method, they use images predefined residue percentages which already observed and do a comparison between the soil residue and the eye 
+ In the photo comparison method, they use images predefined residue percentages which already observed and do a comparison between the soil residue and the eye 
 
  
 Research shows that after cultivating crops the acceptance level for residue level should be maintained around 30 percent [2]. Therefore, there is a necessity for the accuracy of reading the residue cover. 
