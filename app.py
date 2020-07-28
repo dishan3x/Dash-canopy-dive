@@ -118,7 +118,6 @@ body = dbc.Container([
     dbc.Spinner(id="loading",color="primary",children=[html.Div(id='output-image-upload')]),
 ])
 
-
 # Collecting all components for app layout ##########
 app.layout = html.Div([navbar,body])
 
