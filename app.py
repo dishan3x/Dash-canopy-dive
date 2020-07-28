@@ -115,7 +115,7 @@ navbar = dbc.Navbar(
 
 # Body container component  ###########################
 body = dbc.Container([
-    html.Div(id='output-image-upload'),
+    dbc.Spinner(id="loading",color="primary",children=[html.Div(id='output-image-upload')]),
 ])
 
 
@@ -184,6 +184,6 @@ def toggle_navbar_collapse(n, is_open):
 
 
 if __name__ == '__main__':
-    #app.run_server(debug=False)
-    app.run_server(debug=False, host='0.0.0.0', port=80, threaded=True)
+    app.run_server(debug=False)
+    #app.run_server(debug=False, host='0.0.0.0', port=80, threaded=True)
     #app.run_server()
