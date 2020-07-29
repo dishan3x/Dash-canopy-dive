@@ -12,6 +12,7 @@ import dash_bootstrap_components as dbc
 from utils.image_utils import analyse_image_func
 from utils.app_models import app_information,app_instructions
 import time
+import dash_auth
 
 
 # Select themes
@@ -19,9 +20,20 @@ import time
 external_stylesheets = [dbc.themes.BOOTSTRAP]
 external_stylesheets = [dbc.themes.COSMO]
 
+VALID_USERNAME_PASSWORD_PAIRS = {
+    'soilwater': '123'
+}
+
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets,meta_tags=[
         {"name": "viewport", "content": "width=device-width, initial-scale=1"}
     ])
+
+
+auth = dash_auth.BasicAuth(
+    app,
+    VALID_USERNAME_PASSWORD_PAIRS
+)
+
 
 # logo for the app
 CORA_LOGO  = "assets/logo/logo_1.PNG"
