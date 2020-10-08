@@ -9,6 +9,7 @@ from PIL import Image
 import base64
 from io import BytesIO,StringIO
 import dash_bootstrap_components as dbc
+import tensorflow as tf
 
 
 def analyse_image_func(contents, filename, date,selected_model):
@@ -19,11 +20,19 @@ def analyse_image_func(contents, filename, date,selected_model):
         provided from the model. 
     """
     #'2':"models/dishan_segnet_v2_512.onnx",
+    #model_dict = {
+    #    '1':"models/dishan_made_simple_segnet_model.onnx",
+    #    '2':"models/dishan_made_unet_model.onnx",
+    #    '3':"models/test.onnx"
+    #}
+
     model_dict = {
-        '1':"models/dishan_made_simple_segnet_model.onnx",
-        '2':"models/dishan_made_unet_model.onnx",
-        '3':"models/test.onnx"
+        '1':"models/Sample_model.onnx",
+        '2':"models/Sample_model.onnx",
+        '3':"models/Sample_model.onnx"
     }
+
+    
     
     # Decoding string base64 into an image
     content_type, content_string = contents.split(',')
@@ -40,23 +49,49 @@ def analyse_image_func(contents, filename, date,selected_model):
 
     # Convert numpy array for further calculations
     np_img = np.array(im_resized)
+    print("sdsdsdsd",np_img.shape)
 
-    kol = np.transpose(np_img,(2, 1, 0))
-    
+    #kol = np.transpose(im,(0, 1, 2))
+    iol = np.expand_dims(np_img, 0)
+    print("iol",iol.shape)
+    #kol = np.transpose(im,(3, 0,1,2))
+    #np_img = np.array(image)
+    #kol = np.transpose(im,(0, 1,2))
+    #floatAstype = np.float32(np_img)
+
+    #reshape_image  = np.expand_dims(im, 0)
+    #im = Image.open("img_1.png")
+
+    # reshape input
+    #np_ar = np.array(im_resized)
+    #np_reshaped  = np.reshape(np_ar,(size, size,3))
+    #np_reshape  = np.reshape(iol,(1,size, size,3))
+    #np_reshape = np.transpose(im,(2,1,0))
+    #print("np_reshape",np_reshape.shape)
+    iol = np.expand_dims(im, 0)
+    print("iol_____",iol.shape)
+    floatAstype = np.float32(iol)
+    selected_model = 'models/Sample_model.onnx'
+
+
     try:
         # reshape input
-        #np_reshape  = np.reshape(np_img,(1, 3, size, size))
-        floatAstype = np.float32(kol)
+        #print("come here",floatAstype.shape)
+        #np_reshape  = np.reshape(np_img,(1,size, size,3))
+        #floatAstype = np.float32(iol)
+        
+        #print("come here 2",floatAstype.shape)
 
         # Run ONNX runtime
-        sess        = rt.InferenceSession(model_dict[selected_model])
+        #sess        = rt.InferenceSession(selected_model)
 
         # Retrieving  names of input and output layer of the label
-        input_name  = sess.get_inputs()[0].name
-        output_name =sess.get_outputs()[0].name
+        #input_name  = sess.get_inputs()[0].name
+        #output_name =sess.get_outputs()[0].name
+        #print("shape",floatAstype.shape)
 
         # Run the input in onnx model
-        pred_onx    = sess.run([output_name],{input_name:np.expand_dims(floatAstype, 0)})
+        #pred_onx    = sess.run([output_name],{input_name:floatAstype})
 
 
         # Creating the image array 
@@ -64,15 +99,18 @@ def analyse_image_func(contents, filename, date,selected_model):
     
         # Choosing class of the highest index 
         # highest probability of each pixel cell 
-        highest_probability_index = np.argmax(pred_onx[0][0], axis=0)
-        
+        new_model = tf.keras.models.load_model('models/save_model_file')
+        pred_onx = new_model.predict(floatAstype)
+        print("predic",pred_onx.shape)
+        highest_probability_index = np.argmax(pred_onx[0], axis=2)
+        print("highest_probability_index",highest_probability_index.shape)
         # convert prediction array to RGB image.
         for x in range(size):
             for y in range(size):
 
                 index = highest_probability_index[x][y]
                 
-                if index == 0:
+                if index == 2:
 
                     # canopy -> green
                     rgb_array[x,y,0] = 0
@@ -86,7 +124,7 @@ def analyse_image_func(contents, filename, date,selected_model):
                     rgb_array[x,y,1] = 42
                     rgb_array[x,y,2] = 42
 
-                elif index == 2:
+                elif index == 0:
 
                     #stubble  -> blue
                     rgb_array[x,y,0] = 0
@@ -112,10 +150,11 @@ def analyse_image_func(contents, filename, date,selected_model):
         
         pil_img = Image.fromarray(rgb_array)
         #rgb_transpose = pil_img.transpose(Image.ROTATE_45)
-        rgb_transpose = pil_img.transpose(Image.TRANSPOSE)
+        #Transpose
+        #rgb_transpose = pil_img.transpose(Image.TRANSPOSE)
 
         #(background, overlay, 0.5)
-        blend = Image.blend(pil_img_original, rgb_transpose, 0.5)
+        blend = Image.blend(pil_img_original, pil_img, 0.5)
         # use and initiate a different buffer for constructed image 
         buff_constructed    = BytesIO()
         blend.save(buff_constructed, format="JPEG")
@@ -129,20 +168,22 @@ def analyse_image_func(contents, filename, date,selected_model):
         # stubble- 2 
         unique_group_name, counts = np.unique(highest_probability_index, return_counts=True)
         pixel_spread = dict(zip(unique_group_name, counts))
-
+        print(pixel_spread)
         # Retreive the sum of pixel 
         sum_pixel           = sum(counts) 
-
+        print("sum_pixel",sum_pixel)
         # percentages for each group
-        canopy_percentage   = round((pixel_spread[0]/sum_pixel),2)
-        stubble_percentage  = round((pixel_spread[1]/sum_pixel),2)
-        soil_percentage     = round((pixel_spread[2]/sum_pixel),2)
-
+        stubble_percentage  = "{:.1%}".format(pixel_spread[0]/sum_pixel)
+        canopy_percentage= "{:.1%}".format(pixel_spread[2]/sum_pixel)
+        soil_percentage= "{:.1%}".format(pixel_spread[1]/sum_pixel)
+        print(stubble_percentage)
+        print(canopy_percentage)
+        print(soil_percentage)
 
         pixel_count_data = {
             'canopy_p':canopy_percentage,
-            'soil_p':soil_percentage,
-            'stubble_p':stubble_percentage
+            'soil_p':stubble_percentage,
+            'stubble_p':soil_percentage
             }
 
         # Create an ar
@@ -254,7 +295,7 @@ def analysed_info_to_html_func(contents, filename, date, contructed_image,pixel_
                 html.Div(children=[
                     dbc.Card([
                         dbc.CardBody([
-                            html.P("Residue cover %",id="residue-title",className="percentage-information-cards_title"),
+                            html.P("Soil cover %",id="residue-title",className="percentage-information-cards_title"),
                             html.A(pixel_count_data['stubble_p'],className="result-titles")
                         ]
                         ) 
@@ -271,7 +312,7 @@ def analysed_info_to_html_func(contents, filename, date, contructed_image,pixel_
                 html.Div(children=[
                     dbc.Card([
                         dbc.CardBody([
-                            html.P("Soil Cover %",id="soil-title",className="percentage-information-cards_title"),
+                            html.P("Residue Cover %",id="soil-title",className="percentage-information-cards_title"),
                             html.A(pixel_count_data['soil_p'],className="result-titles")
                         ]) 
                     ],
