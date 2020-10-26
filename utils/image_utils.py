@@ -7,6 +7,7 @@ from io import BytesIO
 import dash_bootstrap_components as dbc
 import tensorflow as tf
 import time
+print("libraries loaded")
 
 def analyse_image_func(contents, filename, date,selected_model):
 
@@ -22,29 +23,31 @@ def analyse_image_func(contents, filename, date,selected_model):
     #    '3':"models/test.onnx"
     #}
 
-    model_dict = {
-        '1':"models/Sample_model.onnx",
-        '2':"models/Sample_model.onnx",
-        '3':"models/Sample_model.onnx"
-    }
+    #model_dict = {
+    #    '1':"models/Sample_model.onnx",
+    #    '2':"models/Sample_model.onnx",
+    #    '3':"models/Sample_model.onnx"
+    #}
 
-    
+    start = time.time()
     
     # Decoding string base64 into an image
     content_type, content_string = contents.split(',')
 
     # Decode base64 to bytes
     im = Image.open(BytesIO(base64.b64decode(content_string)))
+    print("--- %s image input completed seconds ---" % (time.time() - start))
 
     # image should be arrange to the model specification
     size        = 512 # size is changed to 256 becuase the model is larger and could not upload to github
      
-
+    start = time.time()
     #  resize the image to to actual size 
     im_resized  = im.resize((size,size))
 
     # Convert numpy array for further calculations
     np_img = np.array(im_resized)
+    print("--- %s image converted seconds ---" % (time.time() - start))
 
     #kol = np.transpose(im,(0, 1, 2))
     #iol = np.expand_dims(np_img, 0)
@@ -97,12 +100,14 @@ def analyse_image_func(contents, filename, date,selected_model):
         start = time.time()
         #print("loading model")
         new_model = tf.keras.models.load_model('models/save_model_file')
-        #print("--- %s model loaded seconds ---" % (time.time() - start))
+        print("--- %s model loaded seconds ---" % (time.time() - start))
         start = time.time()
         pred_onx = new_model.predict(floatAstype)
-        #print("--- %s predictedseconds ---" % (time.time() - start))
+        print("--- %s prediction calculated seconds ---" % (time.time() - start))
         highest_probability_index = np.argmax(pred_onx[0], axis=2)
         # convert prediction array to RGB image.
+        start = time.time()
+
         for x in range(size):
             for y in range(size):
 
@@ -133,8 +138,8 @@ def analyse_image_func(contents, filename, date,selected_model):
         # Convert the resized origianl image to base64
         # This process is need to keep the steady size of the input
 
-    
-
+        print("--- %s RGB image created in seconds ---" % (time.time() - start))
+        start = time.time()
         pil_img_original = Image.fromarray(np_img)
         # using an in-memory bytes buffer
         buff_original    = BytesIO()
@@ -159,6 +164,8 @@ def analyse_image_func(contents, filename, date,selected_model):
         contructed_image_str = base64.b64encode(buff_constructed.getvalue()).decode("utf-8")
         contructed_image_str = "data:image/JPEG;base64,"+contructed_image_str
 
+        print("--- %s images constructed ---" % (time.time() - start))
+
 
         # Retrieving pixel count in each groups
         # canopy - 0
@@ -182,9 +189,12 @@ def analyse_image_func(contents, filename, date,selected_model):
             'stubble_p':soil_percentage
             }
 
+        start = time.time()
+
         # Create an ar
         img_html_div_constructed = analysed_info_to_html_func(original_image_string, filename, date,contructed_image_str,pixel_count_data)
 
+        print("--- %s HTML content construct time in S ---" % (time.time() - start))
 
         return img_html_div_constructed
 
