@@ -1,3 +1,6 @@
+import time
+
+start = time.time()
 import datetime
 import dash_html_components as html
 import numpy as np
@@ -6,8 +9,9 @@ import base64
 from io import BytesIO
 import dash_bootstrap_components as dbc
 import tensorflow as tf
-import time
-print("libraries loaded")
+
+print("------- %s loading time for libraries in seconds ---" % (time.time() - start))
+
 
 def analyse_image_func(contents, filename, date,selected_model):
 
@@ -36,7 +40,7 @@ def analyse_image_func(contents, filename, date,selected_model):
 
     # Decode base64 to bytes
     im = Image.open(BytesIO(base64.b64decode(content_string)))
-    print("--- %s image input completed seconds ---" % (time.time() - start))
+    print("--- %s image stored in varaible completed seconds ---" % (time.time() - start))
 
     # image should be arrange to the model specification
     size        = 512 # size is changed to 256 becuase the model is larger and could not upload to github
@@ -47,7 +51,7 @@ def analyse_image_func(contents, filename, date,selected_model):
 
     # Convert numpy array for further calculations
     np_img = np.array(im_resized)
-    print("--- %s image converted seconds ---" % (time.time() - start))
+    print("--- %s image resized and used as numpy  seconds ---" % (time.time() - start))
 
     #kol = np.transpose(im,(0, 1, 2))
     #iol = np.expand_dims(np_img, 0)
@@ -69,7 +73,7 @@ def analyse_image_func(contents, filename, date,selected_model):
     #np.expand_dims(im, 0)
 
     floatAstype = np.float32(np.expand_dims(im,0))
-    selected_model = 'models/Sample_model.onnx'
+    #selected_model = 'models/Sample_model.onnx'
 
 
     try:
@@ -100,12 +104,15 @@ def analyse_image_func(contents, filename, date,selected_model):
         start = time.time()
         #print("loading model")
         new_model = tf.keras.models.load_model('models/save_model_file')
-        print("--- %s model loaded seconds ---" % (time.time() - start))
+        print("--- %s model loaded using tf seconds ---" % (time.time() - start))
         start = time.time()
         pred_onx = new_model.predict(floatAstype)
-        print("--- %s prediction calculated seconds ---" % (time.time() - start))
+        print("--- %s prediction calculated via image seconds ---" % (time.time() - start))
+        start = time.time()
         highest_probability_index = np.argmax(pred_onx[0], axis=2)
+        print("--- %s probability calulated using argmax seconds ---" % (time.time() - start))
         # convert prediction array to RGB image.
+        
         start = time.time()
 
         for x in range(size):
