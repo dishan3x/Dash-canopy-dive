@@ -29,10 +29,10 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets,meta_tags=[
     ])
 
 
-auth = dash_auth.BasicAuth(
-    app,
-    VALID_USERNAME_PASSWORD_PAIRS
-)
+#auth = dash_auth.BasicAuth(
+#    app,
+#    VALID_USERNAME_PASSWORD_PAIRS
+#)
 
 
 # logo for the app

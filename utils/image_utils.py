@@ -4,13 +4,13 @@ from dash.dependencies import Input, Output, State
 import dash_core_components as dcc
 import dash_html_components as html
 import numpy as np
-import onnxruntime as rt
+#import onnxruntime as rt
 from PIL import Image
 import base64
 from io import BytesIO,StringIO
 import dash_bootstrap_components as dbc
 import tensorflow as tf
-
+import time
 
 def analyse_image_func(contents, filename, date,selected_model):
 
@@ -99,11 +99,14 @@ def analyse_image_func(contents, filename, date,selected_model):
     
         # Choosing class of the highest index 
         # highest probability of each pixel cell 
+        start = time.time()
+        print("loading model")
         new_model = tf.keras.models.load_model('models/save_model_file')
+        print("--- %s model loaded seconds ---" % (time.time() - start))
+        start = time.time()
         pred_onx = new_model.predict(floatAstype)
-        print("predic",pred_onx.shape)
+        print("--- %s predictedseconds ---" % (time.time() - start))
         highest_probability_index = np.argmax(pred_onx[0], axis=2)
-        print("highest_probability_index",highest_probability_index.shape)
         # convert prediction array to RGB image.
         for x in range(size):
             for y in range(size):
@@ -168,10 +171,8 @@ def analyse_image_func(contents, filename, date,selected_model):
         # stubble- 2 
         unique_group_name, counts = np.unique(highest_probability_index, return_counts=True)
         pixel_spread = dict(zip(unique_group_name, counts))
-        print(pixel_spread)
         # Retreive the sum of pixel 
         sum_pixel           = sum(counts) 
-        print("sum_pixel",sum_pixel)
         # percentages for each group
         stubble_percentage  = "{:.1%}".format(pixel_spread[0]/sum_pixel)
         canopy_percentage= "{:.1%}".format(pixel_spread[2]/sum_pixel)
