@@ -49,11 +49,10 @@ def analyse_image_func(contents, filename, date,selected_model):
 
     # Convert numpy array for further calculations
     np_img = np.array(im_resized)
-    print("sdsdsdsd",np_img.shape)
 
     #kol = np.transpose(im,(0, 1, 2))
-    iol = np.expand_dims(np_img, 0)
-    print("iol",iol.shape)
+    #iol = np.expand_dims(np_img, 0)
+
     #kol = np.transpose(im,(3, 0,1,2))
     #np_img = np.array(image)
     #kol = np.transpose(im,(0, 1,2))
@@ -68,9 +67,9 @@ def analyse_image_func(contents, filename, date,selected_model):
     #np_reshape  = np.reshape(iol,(1,size, size,3))
     #np_reshape = np.transpose(im,(2,1,0))
     #print("np_reshape",np_reshape.shape)
-    iol = np.expand_dims(im, 0)
-    print("iol_____",iol.shape)
-    floatAstype = np.float32(iol)
+    #np.expand_dims(im, 0)
+
+    floatAstype = np.float32(np.expand_dims(im,0))
     selected_model = 'models/Sample_model.onnx'
 
 

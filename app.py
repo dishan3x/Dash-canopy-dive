@@ -13,7 +13,7 @@ from utils.image_utils import analyse_image_func
 from utils.app_models import app_information,app_instructions
 import time
 import dash_auth
-
+import flask
 
 # Select themes
 #external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css','dbc.themes.BOOTSTRAP']
@@ -24,9 +24,11 @@ VALID_USERNAME_PASSWORD_PAIRS = {
     'soilwater': '123'
 }
 
+server = flask.Flask(__name__)
+
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets,meta_tags=[
         {"name": "viewport", "content": "width=device-width, initial-scale=1"}
-    ])
+    ],server=server)
 
 
 #auth = dash_auth.BasicAuth(
