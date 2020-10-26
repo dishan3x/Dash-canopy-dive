@@ -8,7 +8,9 @@ from PIL import Image
 import base64
 from io import BytesIO
 import dash_bootstrap_components as dbc
-import tensorflow as tf
+#import tensorflow as tf
+from tensorflow.keras.models import model_from_json
+
 
 print("------- %s loading time for libraries in seconds ---" % (time.time() - start))
 
@@ -103,7 +105,17 @@ def analyse_image_func(contents, filename, date,selected_model):
         # highest probability of each pixel cell 
         start = time.time()
         #print("loading model")
-        new_model = tf.keras.models.load_model('models/save_model_file')
+        #new_model = tf.keras.models.load_model('models/save_model_file')
+        print("open")
+        json_file = open("models/json_model/model.json", 'r')
+        #print(json_file)
+        loaded_model_json = json_file.read()
+        json_file.close()
+        print("kk")
+        new_model = model_from_json(loaded_model_json)
+        print("ll")
+        new_model.load_weights("models/json_model/model_3000.h5")
+        print("kk")
         print("--- %s model loaded using tf seconds ---" % (time.time() - start))
         start = time.time()
         pred_onx = new_model.predict(floatAstype)
