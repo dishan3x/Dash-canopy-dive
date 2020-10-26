@@ -1,13 +1,9 @@
 import datetime
-import dash
-from dash.dependencies import Input, Output, State
-import dash_core_components as dcc
 import dash_html_components as html
 import numpy as np
-#import onnxruntime as rt
 from PIL import Image
 import base64
-from io import BytesIO,StringIO
+from io import BytesIO
 import dash_bootstrap_components as dbc
 import tensorflow as tf
 import time
@@ -99,12 +95,12 @@ def analyse_image_func(contents, filename, date,selected_model):
         # Choosing class of the highest index 
         # highest probability of each pixel cell 
         start = time.time()
-        print("loading model")
+        #print("loading model")
         new_model = tf.keras.models.load_model('models/save_model_file')
-        print("--- %s model loaded seconds ---" % (time.time() - start))
+        #print("--- %s model loaded seconds ---" % (time.time() - start))
         start = time.time()
         pred_onx = new_model.predict(floatAstype)
-        print("--- %s predictedseconds ---" % (time.time() - start))
+        #print("--- %s predictedseconds ---" % (time.time() - start))
         highest_probability_index = np.argmax(pred_onx[0], axis=2)
         # convert prediction array to RGB image.
         for x in range(size):
@@ -176,9 +172,9 @@ def analyse_image_func(contents, filename, date,selected_model):
         stubble_percentage  = "{:.1%}".format(pixel_spread[0]/sum_pixel)
         canopy_percentage= "{:.1%}".format(pixel_spread[2]/sum_pixel)
         soil_percentage= "{:.1%}".format(pixel_spread[1]/sum_pixel)
-        print(stubble_percentage)
-        print(canopy_percentage)
-        print(soil_percentage)
+        #print(stubble_percentage)
+        #print(canopy_percentage)
+        #print(soil_percentage)
 
         pixel_count_data = {
             'canopy_p':canopy_percentage,

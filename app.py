@@ -1,18 +1,13 @@
-import datetime
 import dash
 from dash.dependencies import Input, Output, State
 import dash_core_components as dcc
 import dash_html_components as html
 import numpy as np
-import onnxruntime as rt
-from PIL import Image
-import base64
-from io import BytesIO,StringIO
 import dash_bootstrap_components as dbc
 from utils.image_utils import analyse_image_func
 from utils.app_models import app_information,app_instructions
 import time
-import dash_auth
+#import dash_auth
 import flask
 
 # Select themes
@@ -20,9 +15,9 @@ import flask
 external_stylesheets = [dbc.themes.BOOTSTRAP]
 external_stylesheets = [dbc.themes.COSMO]
 
-VALID_USERNAME_PASSWORD_PAIRS = {
-    'soilwater': '123'
-}
+#VALID_USERNAME_PASSWORD_PAIRS = {
+#    'soilwater': '123'
+#}
 
 server = flask.Flask(__name__)
 
