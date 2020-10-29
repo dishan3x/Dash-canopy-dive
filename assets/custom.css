@@ -93,7 +93,7 @@
 
 
 .result-titles{ 
-    font-size:calc(50px + 5vw);
+    font-size:calc(50px + 3vw);
     text-align: center;
     color: tomato !important;
     line-height: 0.7;

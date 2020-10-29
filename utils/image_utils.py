@@ -34,7 +34,7 @@ def analyse_image_func(contents, filename, date,selected_model):
     #    '2':"models/Sample_model.onnx",
     #    '3':"models/Sample_model.onnx"
     #}
-
+    begin = time.time()
     start = time.time()
     
     # Decoding string base64 into an image
@@ -42,7 +42,7 @@ def analyse_image_func(contents, filename, date,selected_model):
 
     # Decode base64 to bytes
     im = Image.open(BytesIO(base64.b64decode(content_string)))
-    print("--- %s image stored in varaible completed seconds ---" % (time.time() - start))
+    print("New request --- %s image stored in varaible completed seconds ---" % (time.time() - start))
 
     # image should be arrange to the model specification
     size        = 512 # size is changed to 256 becuase the model is larger and could not upload to github
@@ -106,16 +106,16 @@ def analyse_image_func(contents, filename, date,selected_model):
         start = time.time()
         #print("loading model")
         #new_model = tf.keras.models.load_model('models/save_model_file')
-        print("open")
+        #print("open")
         json_file = open("models/json_model/model.json", 'r')
         #print(json_file)
         loaded_model_json = json_file.read()
         json_file.close()
-        print("kk")
+        #print("kk")
         new_model = model_from_json(loaded_model_json)
-        print("ll")
+        #print("ll")
         new_model.load_weights("models/json_model/model_3000.h5")
-        print("kk")
+        #print("kk")
         print("--- %s model loaded using tf seconds ---" % (time.time() - start))
         start = time.time()
         pred_onx = new_model.predict(floatAstype)
@@ -214,6 +214,7 @@ def analyse_image_func(contents, filename, date,selected_model):
         img_html_div_constructed = analysed_info_to_html_func(original_image_string, filename, date,contructed_image_str,pixel_count_data)
 
         print("--- %s HTML content construct time in S ---" % (time.time() - start))
+        print(">>> %s probability overall seconds ---" % (time.time() - begin))
 
         return img_html_div_constructed
 
