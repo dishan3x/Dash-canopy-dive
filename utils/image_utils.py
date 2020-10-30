@@ -4,11 +4,12 @@ start = time.time()
 import datetime
 import dash_html_components as html
 import numpy as np
+import PIL
 from PIL import Image
 import base64
 from io import BytesIO
 import dash_bootstrap_components as dbc
-#import tensorflow as tf
+import tensorflow as tf
 from tensorflow.keras.models import model_from_json
 
 
@@ -42,18 +43,51 @@ def analyse_image_func(contents, filename, date,selected_model):
 
     # Decode base64 to bytes
     im = Image.open(BytesIO(base64.b64decode(content_string)))
-    print("New request --- %s image stored in varaible completed seconds ---" % (time.time() - start))
-
+    #print("New request --- %s image stored in varaible completed seconds ---" % (time.time() - start))
+    #print("xxxxxx",im.getdata())
+    #colours, col_counts = np.unique(im.reshape(-1,3), axis=0, return_counts=1)
+    #print("colors",colours)
+    #print(col_counts)
+    print(type(im))
     # image should be arrange to the model specification
     size        = 512 # size is changed to 256 becuase the model is larger and could not upload to github
      
     start = time.time()
+    #print("PPPPPPPPPPPPPPPPPPPPPPPPPPPPPP size",im.shape)
     #  resize the image to to actual size 
-    im_resized  = im.resize((size,size))
+    #im_resized  = im.resize((size,size))
+    #im_resized = im.crop((512, 512, 512, 512)) 
+    #print("**********************",im_resized.shape)
 
     # Convert numpy array for further calculations
+    #basewidth = 512
+
+    
+    
+
+    #wpercent = (basewidth / float(np_img.shape[0]))
+    #hsize = int((float(np_img.shape[1]) * float(wpercent)))
+    #img = im.resize((basewidth, hsize), PIL.Image.ANTIALIAS)
+    
+    #im1 = img.crop((512, 512, 512, 512)) 
+    #np_kpkp = np.array(im1)
+    #print("after**********",np_kpkp.shape)    
+
+    #print("before****2******",np_img.shape)
+    im_resized    = im.resize((size,size))
+
     np_img = np.array(im_resized)
-    print("--- %s image resized and used as numpy  seconds ---" % (time.time() - start))
+    
+    
+    print("before**********",np_img.shape)
+    #print("After****2******",np.array(im_resized).shape)
+
+
+
+    #im_thumbnail  = im.thumbnail((size,size), PIL.Image.ANTIALIAS)
+    #print("--- %s image resized and used as numpy  seconds ---" % (time.time() - start))
+    #im_thumbnailP = np.array(im_thumbnail)
+    #print("after**thumb********",im_thumbnailP.shape)   
 
     #kol = np.transpose(im,(0, 1, 2))
     #iol = np.expand_dims(np_img, 0)
@@ -74,6 +108,7 @@ def analyse_image_func(contents, filename, date,selected_model):
     #print("np_reshape",np_reshape.shape)
     #np.expand_dims(im, 0)
 
+    #https://github.com/plotly/dash-image-processing/blob/master/notebooks/Exploring%20PIL%20Processing.ipynb
     floatAstype = np.float32(np.expand_dims(im,0))
     #selected_model = 'models/Sample_model.onnx'
 
@@ -104,18 +139,14 @@ def analyse_image_func(contents, filename, date,selected_model):
         # Choosing class of the highest index 
         # highest probability of each pixel cell 
         start = time.time()
-        #print("loading model")
-        #new_model = tf.keras.models.load_model('models/save_model_file')
-        #print("open")
-        json_file = open("models/json_model/model.json", 'r')
-        #print(json_file)
-        loaded_model_json = json_file.read()
-        json_file.close()
-        #print("kk")
-        new_model = model_from_json(loaded_model_json)
-        #print("ll")
-        new_model.load_weights("models/json_model/model_3000.h5")
-        #print("kk")
+        new_model = tf.keras.models.load_model('models/save_model_file')
+        
+        #json_file = open("models/json_model/model.json", 'r')
+        #loaded_model_json = json_file.read()
+        #json_file.close()
+        #new_model = model_from_json(loaded_model_json)
+        #new_model.load_weights("models/json_model/model_3000.h5")
+        
         print("--- %s model loaded using tf seconds ---" % (time.time() - start))
         start = time.time()
         pred_onx = new_model.predict(floatAstype)
@@ -126,6 +157,13 @@ def analyse_image_func(contents, filename, date,selected_model):
         # convert prediction array to RGB image.
         
         start = time.time()
+
+        #update the rows and cols ---------------------------------------------------->
+        # Get all the index  stubble 
+        idx_stubble = highest_probability_index == 0 
+        # rgb_array[idx_stubble,0]= 0
+        # rgb_array[idx_stubble,1]= 0 
+        # rgb_array[idx_stubble,2]= 255  
 
         for x in range(size):
             for y in range(size):
@@ -160,13 +198,16 @@ def analyse_image_func(contents, filename, date,selected_model):
         print("--- %s RGB image created in seconds ---" % (time.time() - start))
         start = time.time()
         pil_img_original = Image.fromarray(np_img)
+        #pil_img_original = pil_img_original.resize(size,size)
+        #pil_img_original = im_resized
         # using an in-memory bytes buffer
         buff_original    = BytesIO()
-        
-        pil_img_original.save(buff_original, format="JPEG")
+        print("arrive here 1")
+        pil_img_original.save(buff_original, format="PNG")
         original_image_string = base64.b64encode(buff_original.getvalue()).decode("utf-8")
+        #original_image_string = base64.b64encode(im_resized.tobytes())
         original_image_string = "data:image_ol/JPEG;base64,"+original_image_string
-
+        print("arrive here 2")
         # convert RGB array to base64
         # Transpose RGB array 
         
@@ -180,6 +221,7 @@ def analyse_image_func(contents, filename, date,selected_model):
         # use and initiate a different buffer for constructed image 
         buff_constructed    = BytesIO()
         blend.save(buff_constructed, format="JPEG")
+        print("arrive here 3")
         contructed_image_str = base64.b64encode(buff_constructed.getvalue()).decode("utf-8")
         contructed_image_str = "data:image/JPEG;base64,"+contructed_image_str
 
