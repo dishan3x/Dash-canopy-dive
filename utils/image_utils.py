@@ -5,7 +5,7 @@ import datetime
 import dash_html_components as html
 import numpy as np
 import PIL
-from PIL import Image
+from PIL import Image,ImageOps
 import base64
 from io import BytesIO
 import dash_bootstrap_components as dbc
@@ -60,26 +60,35 @@ def analyse_image_func(contents, filename, date,selected_model):
     #print("**********************",im_resized.shape)
 
     # Convert numpy array for further calculations
-    #basewidth = 512
+    basewidth = 512
 
+    np_evaluate = np.array(im)
+    print("After**********",np_evaluate.shape)
+    im_resized = None
+    if(np_evaluate.shape[0] < size):
+        wpercent = (basewidth / float(np_evaluate.shape[0]))
+        hsize = int((float(np_evaluate.shape[1]) * float(wpercent)))
+        im_resized = im.resize((basewidth, hsize), PIL.Image.ANTIALIAS)
     
-    
+    else:
+        im_resized    = im.resize((size,size))
 
-    #wpercent = (basewidth / float(np_img.shape[0]))
-    #hsize = int((float(np_img.shape[1]) * float(wpercent)))
-    #img = im.resize((basewidth, hsize), PIL.Image.ANTIALIAS)
+    print("refitting")
+    #size = (512, 512)
+    #fit_and_resized_image = ImageOps.fit(np_evaluate, size, Image.ANTIALIAS)
+    #print("shape refittig",np.array(fit_and_resized_image).shape)
     
     #im1 = img.crop((512, 512, 512, 512)) 
     #np_kpkp = np.array(im1)
     #print("after**********",np_kpkp.shape)    
 
     #print("before****2******",np_img.shape)
-    im_resized    = im.resize((size,size))
+    
 
     np_img = np.array(im_resized)
     
     
-    print("before**********",np_img.shape)
+    print("After**********",np_img.shape)
     #print("After****2******",np.array(im_resized).shape)
 
 
@@ -161,35 +170,46 @@ def analyse_image_func(contents, filename, date,selected_model):
         #update the rows and cols ---------------------------------------------------->
         # Get all the index  stubble 
         idx_stubble = highest_probability_index == 0 
-        # rgb_array[idx_stubble,0]= 0
-        # rgb_array[idx_stubble,1]= 0 
-        # rgb_array[idx_stubble,2]= 255  
+        rgb_array[idx_stubble,0]= 0
+        rgb_array[idx_stubble,1]= 0 
+        rgb_array[idx_stubble,2]= 255  
 
-        for x in range(size):
-            for y in range(size):
+        idx_stubble = highest_probability_index == 1
+        rgb_array[idx_stubble,0]= 165
+        rgb_array[idx_stubble,1]= 42 
+        rgb_array[idx_stubble,2]= 42 
 
-                index = highest_probability_index[x][y]
+        idx_stubble = highest_probability_index == 2
+        rgb_array[idx_stubble,0]= 0
+        rgb_array[idx_stubble,1]= 255 
+        rgb_array[idx_stubble,2]= 0 
+
+
+        #for x in range(size):
+        #    for y in range(size):
+
+        #        index = highest_probability_index[x][y]
                 
-                if index == 2:
+        #        if index == 2:
 
                     # canopy -> green
-                    rgb_array[x,y,0] = 0
-                    rgb_array[x,y,1] = 255
-                    rgb_array[x,y,2] = 0
+        #            rgb_array[x,y,0] = 0
+        #            rgb_array[x,y,1] = 255
+        #            rgb_array[x,y,2] = 0
 
-                elif index == 1:
+        #        elif index == 1:
 
                     # soil -> brown
-                    rgb_array[x,y,0] = 165
-                    rgb_array[x,y,1] = 42
-                    rgb_array[x,y,2] = 42
+        #            rgb_array[x,y,0] = 165
+        #            rgb_array[x,y,1] = 42
+        #            rgb_array[x,y,2] = 42
 
-                elif index == 0:
+        #        elif index == 0:
 
                     #stubble  -> blue
-                    rgb_array[x,y,0] = 0
-                    rgb_array[x,y,1] = 0
-                    rgb_array[x,y,2] = 255
+        #            rgb_array[x,y,0] = 0
+        #            rgb_array[x,y,1] = 0
+        #            rgb_array[x,y,2] = 255
 
 
         # Convert the resized origianl image to base64
