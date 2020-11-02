@@ -118,7 +118,7 @@ def analyse_image_func(contents, filename, date,selected_model):
     #np.expand_dims(im, 0)
 
     #https://github.com/plotly/dash-image-processing/blob/master/notebooks/Exploring%20PIL%20Processing.ipynb
-    floatAstype = np.float32(np.expand_dims(im,0))
+    floatAstype = np.float32(np.expand_dims(np_img,0))
     #selected_model = 'models/Sample_model.onnx'
 
 
@@ -148,13 +148,13 @@ def analyse_image_func(contents, filename, date,selected_model):
         # Choosing class of the highest index 
         # highest probability of each pixel cell 
         start = time.time()
-        new_model = tf.keras.models.load_model('models/save_model_file')
+        #new_model = tf.keras.models.load_model('models/save_model_file')
         
-        #json_file = open("models/json_model/model.json", 'r')
-        #loaded_model_json = json_file.read()
-        #json_file.close()
-        #new_model = model_from_json(loaded_model_json)
-        #new_model.load_weights("models/json_model/model_3000.h5")
+        json_file = open("models/json_model/model.json", 'r')
+        loaded_model_json = json_file.read()
+        json_file.close()
+        new_model = model_from_json(loaded_model_json)
+        new_model.load_weights("models/json_model/model_3000.h5")
         
         print("--- %s model loaded using tf seconds ---" % (time.time() - start))
         start = time.time()
