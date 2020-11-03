@@ -68,7 +68,8 @@ def analyse_image_func(contents, filename, date,selected_model):
     if(np_evaluate.shape[0] < size):
         wpercent = (basewidth / float(np_evaluate.shape[0]))
         hsize = int((float(np_evaluate.shape[1]) * float(wpercent)))
-        im_resized = im.resize((basewidth, hsize), PIL.Image.ANTIALIAS)
+        #im_resized = im.resize((basewidth, hsize), PIL.Image.ANTIALIAS)
+        im_resized    = im.resize((size,size))
     
     else:
         im_resized    = im.resize((size,size))
@@ -252,15 +253,31 @@ def analyse_image_func(contents, filename, date,selected_model):
         # canopy - 0
         # soil   - 1
         # stubble- 2 
+        print("sds",highest_probability_index.shape)
         unique_group_name, counts = np.unique(highest_probability_index, return_counts=True)
+        print("sds",unique_group_name)
         pixel_spread = dict(zip(unique_group_name, counts))
+        
         # Retreive the sum of pixel 
         sum_pixel           = sum(counts) 
         # percentages for each group
-        stubble_percentage  = "{:.1%}".format(pixel_spread[0]/sum_pixel)
-        canopy_percentage= "{:.1%}".format(pixel_spread[2]/sum_pixel)
-        soil_percentage= "{:.1%}".format(pixel_spread[1]/sum_pixel)
-        #print(stubble_percentage)
+        stubble_percentage = 0
+        canopy_percentage = 0
+        soil_percentage = 0
+
+        if 0 in pixel_spread:
+            stubble_percentage =  "{:.1%}".format(pixel_spread[0]/sum_pixel)
+        if 1 in pixel_spread:
+            soil_percentage = "{:.1%}".format(pixel_spread[1]/sum_pixel)
+        if 2 in pixel_spread:
+            canopy_percentage = "{:.1%}".format(pixel_spread[2]/sum_pixel)
+
+
+        #stubble_percentage  = "{:.1%}".format(pixel_spread[0]/sum_pixel)
+        #canopy_percentage= "{:.1%}".format(pixel_spread[2]/sum_pixel)
+        #soil_percentage= "{:.1%}".format(pixel_spread[1]/sum_pixel)
+        print("sds",highest_probability_index.shape)
+        print(stubble_percentage)
         #print(canopy_percentage)
         #print(soil_percentage)
 
