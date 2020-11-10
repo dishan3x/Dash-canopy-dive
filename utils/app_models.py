@@ -45,7 +45,7 @@ def app_instructions():
                         html.Div([
                         html.Li("Stand on soil where you need to calculate soil cover."),
                         html.Li("Open the cora app and click on upload image button to open the camera"),
-                        html.Li("Hold the mobile camera 5m above ground level."),
+                        html.Li("Hold the mobile camera 1m above ground level."),
                         html.Li("Capture image"),
                         ],className="instruction-sublist"),
                         html.Br(),
